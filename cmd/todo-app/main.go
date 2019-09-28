@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
@@ -8,13 +9,19 @@ import (
 )
 
 type Task struct {
-	Id uint32
-	Name string
+	Id   uint32 `json:"id"`
+	Name string `json:"name"`
 }
 
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		fmt.Println("Handling GET Method")
+		task := &Task{1, "hogehgoe"}
+		bytes, _ := json.Marshal(task)
+		_, err := fmt.Fprint(w, string(bytes))
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	if r.Method == http.MethodPost {
 		fmt.Println("Handling POST Method")
@@ -38,12 +45,4 @@ func main() {
 	//}
 	http.HandleFunc("/tasks", tasksHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
-
-	//r := gin.Default()
-	//r.GET("/ping", func(c *gin.Context) {
-	//	c.JSON(200, gin.H{
-	//		"message": "pong",
-	//	})
-	//})
-	//r.Run()
 }
