@@ -13,10 +13,10 @@ produces:
 - application/xml
 - application/gob
 paths:
-  /swagger.json:
+  /openapi.json:
     get:
-      summary: Download ./gen/http/swagger.json
-      operationId: tasks#/swagger.json
+      summary: Download ./gen/http/openapi.json
+      operationId: tasks#/openapi.json
       responses:
         "200":
           description: File downloaded
@@ -31,8 +31,8 @@ paths:
       summary: count_tasks tasks
       operationId: tasks#count_tasks
       responses:
-        "204":
-          description: No Content response.
+        "200":
+          description: OK response.
           schema:
             type: integer
             format: int64

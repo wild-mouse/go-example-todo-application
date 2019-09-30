@@ -50,7 +50,7 @@ func DecodeCountTasksResponse(decoder func(*http.Response) goahttp.Decoder, rest
 			defer resp.Body.Close()
 		}
 		switch resp.StatusCode {
-		case http.StatusNoContent:
+		case http.StatusOK:
 			var (
 				body int
 				err  error

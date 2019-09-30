@@ -50,7 +50,7 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"CountTasks", "GET", "/tasks/count"},
-			{"./gen/http/swagger.json", "GET", "/swagger.json"},
+			{"./gen/http/openapi.json", "GET", "/openapi.json"},
 		},
 		CountTasks: NewCountTasksHandler(e.CountTasks, mux, dec, enc, eh),
 	}
@@ -67,8 +67,8 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the tasks endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountCountTasksHandler(mux, h.CountTasks)
-	MountGenHTTPSwaggerJSON(mux, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./gen/http/swagger.json")
+	MountGenHTTPOpenapiJSON(mux, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./gen/http/openapi.json")
 	}))
 }
 
@@ -117,8 +117,8 @@ func NewCountTasksHandler(
 	})
 }
 
-// MountGenHTTPSwaggerJSON configures the mux to serve GET request made to
-// "/swagger.json".
-func MountGenHTTPSwaggerJSON(mux goahttp.Muxer, h http.Handler) {
-	mux.Handle("GET", "/swagger.json", h.ServeHTTP)
+// MountGenHTTPOpenapiJSON configures the mux to serve GET request made to
+// "/openapi.json".
+func MountGenHTTPOpenapiJSON(mux goahttp.Muxer, h http.Handler) {
+	mux.Handle("GET", "/openapi.json", h.ServeHTTP)
 }

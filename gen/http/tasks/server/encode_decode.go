@@ -21,7 +21,7 @@ func EncodeCountTasksResponse(encoder func(context.Context, http.ResponseWriter)
 		res := v.(int)
 		enc := encoder(ctx, w)
 		body := res
-		w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
 }

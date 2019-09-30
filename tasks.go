@@ -21,5 +21,5 @@ func NewTasks(logger *log.Logger) tasks.Service {
 // CountTasks implements count_tasks.
 func (s *taskssrvc) CountTasks(ctx context.Context) (res int, err error) {
 	s.logger.Print("tasks.count_tasks")
-	return
+	return 10, nil
 }
