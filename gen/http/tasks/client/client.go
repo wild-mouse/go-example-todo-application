@@ -17,9 +17,9 @@ import (
 
 // Client lists the tasks service endpoint HTTP clients.
 type Client struct {
-	// CountTasks Doer is the HTTP client used to make requests to the count_tasks
+	// GetTask Doer is the HTTP client used to make requests to the get_task
 	// endpoint.
-	CountTasksDoer goahttp.Doer
+	GetTaskDoer goahttp.Doer
 
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
@@ -41,7 +41,7 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		CountTasksDoer:      doer,
+		GetTaskDoer:         doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -50,21 +50,21 @@ func NewClient(
 	}
 }
 
-// CountTasks returns an endpoint that makes HTTP requests to the tasks service
-// count_tasks server.
-func (c *Client) CountTasks() goa.Endpoint {
+// GetTask returns an endpoint that makes HTTP requests to the tasks service
+// get_task server.
+func (c *Client) GetTask() goa.Endpoint {
 	var (
-		decodeResponse = DecodeCountTasksResponse(c.decoder, c.RestoreResponseBody)
+		decodeResponse = DecodeGetTaskResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
-		req, err := c.BuildCountTasksRequest(ctx, v)
+		req, err := c.BuildGetTaskRequest(ctx, v)
 		if err != nil {
 			return nil, err
 		}
-		resp, err := c.CountTasksDoer.Do(req)
+		resp, err := c.GetTaskDoer.Do(req)
 
 		if err != nil {
-			return nil, goahttp.ErrRequestError("tasks", "count_tasks", err)
+			return nil, goahttp.ErrRequestError("tasks", "get_task", err)
 		}
 		return decodeResponse(resp)
 	}

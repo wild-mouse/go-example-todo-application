@@ -30,13 +30,13 @@ func NewClient(cc *grpc.ClientConn, opts ...grpc.CallOption) *Client {
 	}
 }
 
-// CountTasks calls the "CountTasks" function in taskspb.TasksClient interface.
-func (c *Client) CountTasks() goa.Endpoint {
+// GetTask calls the "GetTask" function in taskspb.TasksClient interface.
+func (c *Client) GetTask() goa.Endpoint {
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		inv := goagrpc.NewInvoker(
-			BuildCountTasksFunc(c.grpccli, c.opts...),
-			nil,
-			DecodeCountTasksResponse)
+			BuildGetTaskFunc(c.grpccli, c.opts...),
+			EncodeGetTaskRequest,
+			DecodeGetTaskResponse)
 		res, err := inv.Invoke(ctx, v)
 		if err != nil {
 			return nil, goa.Fault(err.Error())

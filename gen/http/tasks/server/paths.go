@@ -7,7 +7,11 @@
 
 package server
 
-// CountTasksTasksPath returns the URL path to the tasks service count_tasks HTTP endpoint.
-func CountTasksTasksPath() string {
-	return "/tasks/count"
+import (
+	"fmt"
+)
+
+// GetTaskTasksPath returns the URL path to the tasks service get_task HTTP endpoint.
+func GetTaskTasksPath(id uint32) string {
+	return fmt.Sprintf("/tasks/%v", id)
 }

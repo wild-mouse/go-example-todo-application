@@ -13,13 +13,18 @@ option go_package = "taskspb";
 
 // The task service.
 service Tasks {
-	// CountTasks implements count_tasks.
-	rpc CountTasks (CountTasksRequest) returns (CountTasksResponse);
+	// GetTask implements get_task.
+	rpc GetTask (GetTaskRequest) returns (GetTaskResponse);
 }
 
-message CountTasksRequest {
+message GetTaskRequest {
+	// ID of task
+	uint32 id = 1;
 }
 
-message CountTasksResponse {
-	sint32 field = 1;
+message GetTaskResponse {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
 }

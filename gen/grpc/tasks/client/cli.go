@@ -6,3 +6,30 @@
 // $ goa gen github.com/wild-mouse/go-example-todo-application/design
 
 package client
+
+import (
+	"encoding/json"
+	"fmt"
+
+	taskspb "github.com/wild-mouse/go-example-todo-application/gen/grpc/tasks/pb"
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
+)
+
+// BuildGetTaskPayload builds the payload for the tasks get_task endpoint from
+// CLI flags.
+func BuildGetTaskPayload(tasksGetTaskMessage string) (*tasks.GetTaskPayload, error) {
+	var err error
+	var message taskspb.GetTaskRequest
+	{
+		if tasksGetTaskMessage != "" {
+			err = json.Unmarshal([]byte(tasksGetTaskMessage), &message)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"id\": 2604933010\n   }'")
+			}
+		}
+	}
+	v := &tasks.GetTaskPayload{
+		ID: message.Id,
+	}
+	return v, nil
+}

@@ -24,93 +24,114 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type CountTasksRequest struct {
+type GetTaskRequest struct {
+	// ID of task
+	Id                   uint32   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CountTasksRequest) Reset()         { *m = CountTasksRequest{} }
-func (m *CountTasksRequest) String() string { return proto.CompactTextString(m) }
-func (*CountTasksRequest) ProtoMessage()    {}
-func (*CountTasksRequest) Descriptor() ([]byte, []int) {
+func (m *GetTaskRequest) Reset()         { *m = GetTaskRequest{} }
+func (m *GetTaskRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTaskRequest) ProtoMessage()    {}
+func (*GetTaskRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b3834c8ef8464a3f, []int{0}
 }
 
-func (m *CountTasksRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CountTasksRequest.Unmarshal(m, b)
+func (m *GetTaskRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTaskRequest.Unmarshal(m, b)
 }
-func (m *CountTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CountTasksRequest.Marshal(b, m, deterministic)
+func (m *GetTaskRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTaskRequest.Marshal(b, m, deterministic)
 }
-func (m *CountTasksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CountTasksRequest.Merge(m, src)
+func (m *GetTaskRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTaskRequest.Merge(m, src)
 }
-func (m *CountTasksRequest) XXX_Size() int {
-	return xxx_messageInfo_CountTasksRequest.Size(m)
+func (m *GetTaskRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTaskRequest.Size(m)
 }
-func (m *CountTasksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CountTasksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CountTasksRequest proto.InternalMessageInfo
-
-type CountTasksResponse struct {
-	Field                int32    `protobuf:"zigzag32,1,opt,name=field,proto3" json:"field,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *GetTaskRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTaskRequest.DiscardUnknown(m)
 }
 
-func (m *CountTasksResponse) Reset()         { *m = CountTasksResponse{} }
-func (m *CountTasksResponse) String() string { return proto.CompactTextString(m) }
-func (*CountTasksResponse) ProtoMessage()    {}
-func (*CountTasksResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b3834c8ef8464a3f, []int{1}
-}
+var xxx_messageInfo_GetTaskRequest proto.InternalMessageInfo
 
-func (m *CountTasksResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CountTasksResponse.Unmarshal(m, b)
-}
-func (m *CountTasksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CountTasksResponse.Marshal(b, m, deterministic)
-}
-func (m *CountTasksResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CountTasksResponse.Merge(m, src)
-}
-func (m *CountTasksResponse) XXX_Size() int {
-	return xxx_messageInfo_CountTasksResponse.Size(m)
-}
-func (m *CountTasksResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CountTasksResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CountTasksResponse proto.InternalMessageInfo
-
-func (m *CountTasksResponse) GetField() int32 {
+func (m *GetTaskRequest) GetId() uint32 {
 	if m != nil {
-		return m.Field
+		return m.Id
 	}
 	return 0
 }
 
+type GetTaskResponse struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTaskResponse) Reset()         { *m = GetTaskResponse{} }
+func (m *GetTaskResponse) String() string { return proto.CompactTextString(m) }
+func (*GetTaskResponse) ProtoMessage()    {}
+func (*GetTaskResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{1}
+}
+
+func (m *GetTaskResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTaskResponse.Unmarshal(m, b)
+}
+func (m *GetTaskResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTaskResponse.Marshal(b, m, deterministic)
+}
+func (m *GetTaskResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTaskResponse.Merge(m, src)
+}
+func (m *GetTaskResponse) XXX_Size() int {
+	return xxx_messageInfo_GetTaskResponse.Size(m)
+}
+func (m *GetTaskResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTaskResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTaskResponse proto.InternalMessageInfo
+
+func (m *GetTaskResponse) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *GetTaskResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterType((*CountTasksRequest)(nil), "tasks.CountTasksRequest")
-	proto.RegisterType((*CountTasksResponse)(nil), "tasks.CountTasksResponse")
+	proto.RegisterType((*GetTaskRequest)(nil), "tasks.GetTaskRequest")
+	proto.RegisterType((*GetTaskResponse)(nil), "tasks.GetTaskResponse")
 }
 
 func init() { proto.RegisterFile("tasks.proto", fileDescriptor_b3834c8ef8464a3f) }
 
 var fileDescriptor_b3834c8ef8464a3f = []byte{
-	// 128 bytes of a gzipped FileDescriptorProto
+	// 145 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x49, 0x2c, 0xce,
-	0x2e, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x73, 0x94, 0x84, 0xb9, 0x04, 0x9d,
-	0xf3, 0x4b, 0xf3, 0x4a, 0x42, 0x40, 0xbc, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x25, 0x2d,
-	0x2e, 0x21, 0x64, 0xc1, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0x21, 0x11, 0x2e, 0xd6, 0xb4, 0xcc,
-	0xd4, 0x9c, 0x14, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xc1, 0x20, 0x08, 0xc7, 0xc8, 0x8b, 0x8b, 0x15,
-	0xac, 0x4c, 0xc8, 0x91, 0x8b, 0x0b, 0xa1, 0x49, 0x48, 0x42, 0x0f, 0x62, 0x19, 0x86, 0xe1, 0x52,
-	0x92, 0x58, 0x64, 0x20, 0x36, 0x38, 0x71, 0x46, 0xb1, 0x83, 0xe5, 0x0a, 0x92, 0x92, 0xd8, 0xc0,
-	0xae, 0x34, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x96, 0x1f, 0xdc, 0xad, 0xb4, 0x00, 0x00, 0x00,
+	0x2e, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x73, 0x94, 0x14, 0xb8, 0xf8, 0xdc,
+	0x53, 0x4b, 0x42, 0x12, 0x8b, 0xb3, 0x83, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84, 0xf8, 0xb8,
+	0x98, 0x32, 0x53, 0x24, 0x18, 0x15, 0x18, 0x35, 0x78, 0x83, 0x98, 0x32, 0x53, 0x94, 0x4c, 0xb9,
+	0xf8, 0xe1, 0x2a, 0x8a, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0xd1, 0x95, 0x08, 0x09, 0x71, 0xb1, 0xe4,
+	0x25, 0xe6, 0xa6, 0x4a, 0x30, 0x29, 0x30, 0x6a, 0x70, 0x06, 0x81, 0xd9, 0x46, 0x8e, 0x5c, 0xac,
+	0x20, 0x3d, 0xc5, 0x42, 0x16, 0x5c, 0xec, 0x50, 0xfd, 0x42, 0xa2, 0x7a, 0x10, 0x17, 0xa0, 0xda,
+	0x28, 0x25, 0x86, 0x2e, 0x0c, 0xb1, 0xc6, 0x89, 0x33, 0x8a, 0x1d, 0x2c, 0x51, 0x90, 0x94, 0xc4,
+	0x06, 0x76, 0xb4, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x8f, 0xc6, 0x87, 0x8d, 0xc3, 0x00, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -125,8 +146,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type TasksClient interface {
-	// CountTasks implements count_tasks.
-	CountTasks(ctx context.Context, in *CountTasksRequest, opts ...grpc.CallOption) (*CountTasksResponse, error)
+	// GetTask implements get_task.
+	GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error)
 }
 
 type tasksClient struct {
@@ -137,9 +158,9 @@ func NewTasksClient(cc *grpc.ClientConn) TasksClient {
 	return &tasksClient{cc}
 }
 
-func (c *tasksClient) CountTasks(ctx context.Context, in *CountTasksRequest, opts ...grpc.CallOption) (*CountTasksResponse, error) {
-	out := new(CountTasksResponse)
-	err := c.cc.Invoke(ctx, "/tasks.Tasks/CountTasks", in, out, opts...)
+func (c *tasksClient) GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error) {
+	out := new(GetTaskResponse)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/GetTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -148,36 +169,36 @@ func (c *tasksClient) CountTasks(ctx context.Context, in *CountTasksRequest, opt
 
 // TasksServer is the server API for Tasks service.
 type TasksServer interface {
-	// CountTasks implements count_tasks.
-	CountTasks(context.Context, *CountTasksRequest) (*CountTasksResponse, error)
+	// GetTask implements get_task.
+	GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error)
 }
 
 // UnimplementedTasksServer can be embedded to have forward compatible implementations.
 type UnimplementedTasksServer struct {
 }
 
-func (*UnimplementedTasksServer) CountTasks(ctx context.Context, req *CountTasksRequest) (*CountTasksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CountTasks not implemented")
+func (*UnimplementedTasksServer) GetTask(ctx context.Context, req *GetTaskRequest) (*GetTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTask not implemented")
 }
 
 func RegisterTasksServer(s *grpc.Server, srv TasksServer) {
 	s.RegisterService(&_Tasks_serviceDesc, srv)
 }
 
-func _Tasks_CountTasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CountTasksRequest)
+func _Tasks_GetTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTaskRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TasksServer).CountTasks(ctx, in)
+		return srv.(TasksServer).GetTask(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/tasks.Tasks/CountTasks",
+		FullMethod: "/tasks.Tasks/GetTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TasksServer).CountTasks(ctx, req.(*CountTasksRequest))
+		return srv.(TasksServer).GetTask(ctx, req.(*GetTaskRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -187,8 +208,8 @@ var _Tasks_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*TasksServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CountTasks",
-			Handler:    _Tasks_CountTasks_Handler,
+			MethodName: "GetTask",
+			Handler:    _Tasks_GetTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

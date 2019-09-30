@@ -18,7 +18,7 @@ import (
 
 // Server implements the taskspb.TasksServer interface.
 type Server struct {
-	CountTasksH goagrpc.UnaryHandler
+	GetTaskH goagrpc.UnaryHandler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -30,27 +30,26 @@ type ErrorNamer interface {
 // New instantiates the server struct with the tasks service endpoints.
 func New(e *tasks.Endpoints, uh goagrpc.UnaryHandler) *Server {
 	return &Server{
-		CountTasksH: NewCountTasksHandler(e.CountTasks, uh),
+		GetTaskH: NewGetTaskHandler(e.GetTask, uh),
 	}
 }
 
-// NewCountTasksHandler creates a gRPC handler which serves the "tasks" service
-// "count_tasks" endpoint.
-func NewCountTasksHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+// NewGetTaskHandler creates a gRPC handler which serves the "tasks" service
+// "get_task" endpoint.
+func NewGetTaskHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
 	if h == nil {
-		h = goagrpc.NewUnaryHandler(endpoint, nil, EncodeCountTasksResponse)
+		h = goagrpc.NewUnaryHandler(endpoint, DecodeGetTaskRequest, EncodeGetTaskResponse)
 	}
 	return h
 }
 
-// CountTasks implements the "CountTasks" method in taskspb.TasksServer
-// interface.
-func (s *Server) CountTasks(ctx context.Context, message *taskspb.CountTasksRequest) (*taskspb.CountTasksResponse, error) {
-	ctx = context.WithValue(ctx, goa.MethodKey, "count_tasks")
+// GetTask implements the "GetTask" method in taskspb.TasksServer interface.
+func (s *Server) GetTask(ctx context.Context, message *taskspb.GetTaskRequest) (*taskspb.GetTaskResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "get_task")
 	ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
-	resp, err := s.CountTasksH.Handle(ctx, message)
+	resp, err := s.GetTaskH.Handle(ctx, message)
 	if err != nil {
 		return nil, goagrpc.EncodeError(err)
 	}
-	return resp.(*taskspb.CountTasksResponse), nil
+	return resp.(*taskspb.GetTaskResponse), nil
 }

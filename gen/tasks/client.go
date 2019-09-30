@@ -15,22 +15,22 @@ import (
 
 // Client is the "tasks" service client.
 type Client struct {
-	CountTasksEndpoint goa.Endpoint
+	GetTaskEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "tasks" service client given the endpoints.
-func NewClient(countTasks goa.Endpoint) *Client {
+func NewClient(getTask goa.Endpoint) *Client {
 	return &Client{
-		CountTasksEndpoint: countTasks,
+		GetTaskEndpoint: getTask,
 	}
 }
 
-// CountTasks calls the "count_tasks" endpoint of the "tasks" service.
-func (c *Client) CountTasks(ctx context.Context) (res int, err error) {
+// GetTask calls the "get_task" endpoint of the "tasks" service.
+func (c *Client) GetTask(ctx context.Context, p *GetTaskPayload) (res *Task, err error) {
 	var ires interface{}
-	ires, err = c.CountTasksEndpoint(ctx, nil)
+	ires, err = c.GetTaskEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(int), nil
+	return ires.(*Task), nil
 }

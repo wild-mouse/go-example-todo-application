@@ -22,13 +22,15 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `tasks count-tasks
+	return `tasks get-task
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` tasks count-tasks` + "\n" +
+	return os.Args[0] + ` tasks get-task --message '{
+      "id": 2604933010
+   }'` + "\n" +
 		""
 }
 
@@ -38,10 +40,11 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 	var (
 		tasksFlags = flag.NewFlagSet("tasks", flag.ContinueOnError)
 
-		tasksCountTasksFlags = flag.NewFlagSet("count-tasks", flag.ExitOnError)
+		tasksGetTaskFlags       = flag.NewFlagSet("get-task", flag.ExitOnError)
+		tasksGetTaskMessageFlag = tasksGetTaskFlags.String("message", "", "")
 	)
 	tasksFlags.Usage = tasksUsage
-	tasksCountTasksFlags.Usage = tasksCountTasksUsage
+	tasksGetTaskFlags.Usage = tasksGetTaskUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -77,8 +80,8 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 		switch svcn {
 		case "tasks":
 			switch epn {
-			case "count-tasks":
-				epf = tasksCountTasksFlags
+			case "get-task":
+				epf = tasksGetTaskFlags
 
 			}
 
@@ -105,9 +108,9 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 		case "tasks":
 			c := tasksc.NewClient(cc, opts...)
 			switch epn {
-			case "count-tasks":
-				endpoint = c.CountTasks()
-				data = nil
+			case "get-task":
+				endpoint = c.GetTask()
+				data, err = tasksc.BuildGetTaskPayload(*tasksGetTaskMessageFlag)
 			}
 		}
 	}
@@ -125,18 +128,21 @@ Usage:
     %s [globalflags] tasks COMMAND [flags]
 
 COMMAND:
-    count-tasks: CountTasks implements count_tasks.
+    get-task: GetTask implements get_task.
 
 Additional help:
     %s tasks COMMAND --help
 `, os.Args[0], os.Args[0])
 }
-func tasksCountTasksUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] tasks count-tasks
+func tasksGetTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks get-task -message JSON
 
-CountTasks implements count_tasks.
+GetTask implements get_task.
+    -message JSON: 
 
 Example:
-    `+os.Args[0]+` tasks count-tasks
+    `+os.Args[0]+` tasks get-task --message '{
+      "id": 2604933010
+   }'
 `, os.Args[0])
 }

@@ -10,18 +10,48 @@ package server
 import (
 	"context"
 	"net/http"
+	"strconv"
 
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
 	goahttp "goa.design/goa/v3/http"
+	goa "goa.design/goa/v3/pkg"
 )
 
-// EncodeCountTasksResponse returns an encoder for responses returned by the
-// tasks count_tasks endpoint.
-func EncodeCountTasksResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+// EncodeGetTaskResponse returns an encoder for responses returned by the tasks
+// get_task endpoint.
+func EncodeGetTaskResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(int)
+		res := v.(*tasks.Task)
 		enc := encoder(ctx, w)
-		body := res
+		body := NewGetTaskResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
+	}
+}
+
+// DecodeGetTaskRequest returns a decoder for requests sent to the tasks
+// get_task endpoint.
+func DecodeGetTaskRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			id  uint32
+			err error
+
+			params = mux.Vars(r)
+		)
+		{
+			idRaw := params["id"]
+			v, err2 := strconv.ParseUint(idRaw, 10, 32)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "unsigned integer"))
+			}
+			id = uint32(v)
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewGetTaskPayload(id)
+
+		return payload, nil
 	}
 }

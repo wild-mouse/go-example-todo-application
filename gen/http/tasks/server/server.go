@@ -18,8 +18,8 @@ import (
 
 // Server lists the tasks service endpoint HTTP handlers.
 type Server struct {
-	Mounts     []*MountPoint
-	CountTasks http.Handler
+	Mounts  []*MountPoint
+	GetTask http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -49,10 +49,10 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
-			{"CountTasks", "GET", "/tasks/count"},
+			{"GetTask", "GET", "/tasks/{id}"},
 			{"./gen/http/openapi.json", "GET", "/openapi.json"},
 		},
-		CountTasks: NewCountTasksHandler(e.CountTasks, mux, dec, enc, eh),
+		GetTask: NewGetTaskHandler(e.GetTask, mux, dec, enc, eh),
 	}
 }
 
@@ -61,32 +61,32 @@ func (s *Server) Service() string { return "tasks" }
 
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
-	s.CountTasks = m(s.CountTasks)
+	s.GetTask = m(s.GetTask)
 }
 
 // Mount configures the mux to serve the tasks endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
-	MountCountTasksHandler(mux, h.CountTasks)
+	MountGetTaskHandler(mux, h.GetTask)
 	MountGenHTTPOpenapiJSON(mux, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./gen/http/openapi.json")
 	}))
 }
 
-// MountCountTasksHandler configures the mux to serve the "tasks" service
-// "count_tasks" endpoint.
-func MountCountTasksHandler(mux goahttp.Muxer, h http.Handler) {
+// MountGetTaskHandler configures the mux to serve the "tasks" service
+// "get_task" endpoint.
+func MountGetTaskHandler(mux goahttp.Muxer, h http.Handler) {
 	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("GET", "/tasks/count", f)
+	mux.Handle("GET", "/tasks/{id}", f)
 }
 
-// NewCountTasksHandler creates a HTTP handler which loads the HTTP request and
-// calls the "tasks" service "count_tasks" endpoint.
-func NewCountTasksHandler(
+// NewGetTaskHandler creates a HTTP handler which loads the HTTP request and
+// calls the "tasks" service "get_task" endpoint.
+func NewGetTaskHandler(
 	endpoint goa.Endpoint,
 	mux goahttp.Muxer,
 	dec func(*http.Request) goahttp.Decoder,
@@ -94,16 +94,23 @@ func NewCountTasksHandler(
 	eh func(context.Context, http.ResponseWriter, error),
 ) http.Handler {
 	var (
-		encodeResponse = EncodeCountTasksResponse(enc)
+		decodeRequest  = DecodeGetTaskRequest(mux, dec)
+		encodeResponse = EncodeGetTaskResponse(enc)
 		encodeError    = goahttp.ErrorEncoder(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
-		ctx = context.WithValue(ctx, goa.MethodKey, "count_tasks")
+		ctx = context.WithValue(ctx, goa.MethodKey, "get_task")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
-		var err error
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
 
-		res, err := endpoint(ctx, nil)
+		res, err := endpoint(ctx, payload)
 
 		if err != nil {
 			if err := encodeError(ctx, w, err); err != nil {

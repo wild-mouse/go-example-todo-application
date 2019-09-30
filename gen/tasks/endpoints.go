@@ -15,25 +15,26 @@ import (
 
 // Endpoints wraps the "tasks" service endpoints.
 type Endpoints struct {
-	CountTasks goa.Endpoint
+	GetTask goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "tasks" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		CountTasks: NewCountTasksEndpoint(s),
+		GetTask: NewGetTaskEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "tasks" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
-	e.CountTasks = m(e.CountTasks)
+	e.GetTask = m(e.GetTask)
 }
 
-// NewCountTasksEndpoint returns an endpoint function that calls the method
-// "count_tasks" of service "tasks".
-func NewCountTasksEndpoint(s Service) goa.Endpoint {
+// NewGetTaskEndpoint returns an endpoint function that calls the method
+// "get_task" of service "tasks".
+func NewGetTaskEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.CountTasks(ctx)
+		p := req.(*GetTaskPayload)
+		return s.GetTask(ctx, p)
 	}
 }

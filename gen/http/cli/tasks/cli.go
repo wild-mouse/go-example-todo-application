@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `tasks count-tasks
+	return `tasks get-task
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` tasks count-tasks` + "\n" +
+	return os.Args[0] + ` tasks get-task --id 3978120083` + "\n" +
 		""
 }
 
@@ -45,10 +45,11 @@ func ParseEndpoint(
 	var (
 		tasksFlags = flag.NewFlagSet("tasks", flag.ContinueOnError)
 
-		tasksCountTasksFlags = flag.NewFlagSet("count-tasks", flag.ExitOnError)
+		tasksGetTaskFlags  = flag.NewFlagSet("get-task", flag.ExitOnError)
+		tasksGetTaskIDFlag = tasksGetTaskFlags.String("id", "REQUIRED", "ID of task")
 	)
 	tasksFlags.Usage = tasksUsage
-	tasksCountTasksFlags.Usage = tasksCountTasksUsage
+	tasksGetTaskFlags.Usage = tasksGetTaskUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -84,8 +85,8 @@ func ParseEndpoint(
 		switch svcn {
 		case "tasks":
 			switch epn {
-			case "count-tasks":
-				epf = tasksCountTasksFlags
+			case "get-task":
+				epf = tasksGetTaskFlags
 
 			}
 
@@ -112,9 +113,9 @@ func ParseEndpoint(
 		case "tasks":
 			c := tasksc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
-			case "count-tasks":
-				endpoint = c.CountTasks()
-				data = nil
+			case "get-task":
+				endpoint = c.GetTask()
+				data, err = tasksc.BuildGetTaskPayload(*tasksGetTaskIDFlag)
 			}
 		}
 	}
@@ -132,18 +133,19 @@ Usage:
     %s [globalflags] tasks COMMAND [flags]
 
 COMMAND:
-    count-tasks: CountTasks implements count_tasks.
+    get-task: GetTask implements get_task.
 
 Additional help:
     %s tasks COMMAND --help
 `, os.Args[0], os.Args[0])
 }
-func tasksCountTasksUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] tasks count-tasks
+func tasksGetTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks get-task -id UINT32
 
-CountTasks implements count_tasks.
+GetTask implements get_task.
+    -id UINT32: ID of task
 
 Example:
-    `+os.Args[0]+` tasks count-tasks
+    `+os.Args[0]+` tasks get-task --id 3978120083
 `, os.Args[0])
 }

@@ -11,32 +11,44 @@ import (
 	"context"
 
 	taskspb "github.com/wild-mouse/go-example-todo-application/gen/grpc/tasks/pb"
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
 	goagrpc "goa.design/goa/v3/grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
 
-// BuildCountTasksFunc builds the remote method to invoke for "tasks" service
-// "count_tasks" endpoint.
-func BuildCountTasksFunc(grpccli taskspb.TasksClient, cliopts ...grpc.CallOption) goagrpc.RemoteFunc {
+// BuildGetTaskFunc builds the remote method to invoke for "tasks" service
+// "get_task" endpoint.
+func BuildGetTaskFunc(grpccli taskspb.TasksClient, cliopts ...grpc.CallOption) goagrpc.RemoteFunc {
 	return func(ctx context.Context, reqpb interface{}, opts ...grpc.CallOption) (interface{}, error) {
 		for _, opt := range cliopts {
 			opts = append(opts, opt)
 		}
 		if reqpb != nil {
-			return grpccli.CountTasks(ctx, reqpb.(*taskspb.CountTasksRequest), opts...)
+			return grpccli.GetTask(ctx, reqpb.(*taskspb.GetTaskRequest), opts...)
 		}
-		return grpccli.CountTasks(ctx, &taskspb.CountTasksRequest{}, opts...)
+		return grpccli.GetTask(ctx, &taskspb.GetTaskRequest{}, opts...)
 	}
 }
 
-// DecodeCountTasksResponse decodes responses from the tasks count_tasks
-// endpoint.
-func DecodeCountTasksResponse(ctx context.Context, v interface{}, hdr, trlr metadata.MD) (interface{}, error) {
-	message, ok := v.(*taskspb.CountTasksResponse)
+// EncodeGetTaskRequest encodes requests sent to tasks get_task endpoint.
+func EncodeGetTaskRequest(ctx context.Context, v interface{}, md *metadata.MD) (interface{}, error) {
+	payload, ok := v.(*tasks.GetTaskPayload)
 	if !ok {
-		return nil, goagrpc.ErrInvalidType("tasks", "count_tasks", "*taskspb.CountTasksResponse", v)
+		return nil, goagrpc.ErrInvalidType("tasks", "get_task", "*tasks.GetTaskPayload", v)
 	}
-	res := NewCountTasksResult(message)
+	return NewGetTaskRequest(payload), nil
+}
+
+// DecodeGetTaskResponse decodes responses from the tasks get_task endpoint.
+func DecodeGetTaskResponse(ctx context.Context, v interface{}, hdr, trlr metadata.MD) (interface{}, error) {
+	message, ok := v.(*taskspb.GetTaskResponse)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("tasks", "get_task", "*taskspb.GetTaskResponse", v)
+	}
+	if err := ValidateGetTaskResponse(message); err != nil {
+		return nil, err
+	}
+	res := NewGetTaskResult(message)
 	return res, nil
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
+	"github.com/wild-mouse/go-example-todo-application/gen/tasks"
 )
 
 // tasks service example implementation.
@@ -18,8 +18,10 @@ func NewTasks(logger *log.Logger) tasks.Service {
 	return &taskssrvc{logger}
 }
 
-// CountTasks implements count_tasks.
-func (s *taskssrvc) CountTasks(ctx context.Context) (res int, err error) {
-	s.logger.Print("tasks.count_tasks")
-	return 10, nil
+// GetTask implements get_task.
+func (s *taskssrvc) GetTask(ctx context.Context, p *tasks.GetTaskPayload) (res *tasks.Task, err error) {
+	id := uint32(1);
+	res = &tasks.Task{ID: &id, Name: "This is a simple task."}
+	s.logger.Print("tasks.get_task")
+	return res, nil
 }

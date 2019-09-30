@@ -14,16 +14,27 @@ import (
 	"net/http"
 	"net/url"
 
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
 	goahttp "goa.design/goa/v3/http"
 )
 
-// BuildCountTasksRequest instantiates a HTTP request object with method and
-// path set to call the "tasks" service "count_tasks" endpoint
-func (c *Client) BuildCountTasksRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CountTasksTasksPath()}
+// BuildGetTaskRequest instantiates a HTTP request object with method and path
+// set to call the "tasks" service "get_task" endpoint
+func (c *Client) BuildGetTaskRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id uint32
+	)
+	{
+		p, ok := v.(*tasks.GetTaskPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("tasks", "get_task", "*tasks.GetTaskPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetTaskTasksPath(id)}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
-		return nil, goahttp.ErrInvalidURL("tasks", "count_tasks", u.String(), err)
+		return nil, goahttp.ErrInvalidURL("tasks", "get_task", u.String(), err)
 	}
 	if ctx != nil {
 		req = req.WithContext(ctx)
@@ -32,10 +43,10 @@ func (c *Client) BuildCountTasksRequest(ctx context.Context, v interface{}) (*ht
 	return req, nil
 }
 
-// DecodeCountTasksResponse returns a decoder for responses returned by the
-// tasks count_tasks endpoint. restoreBody controls whether the response body
-// should be restored after having been read.
-func DecodeCountTasksResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+// DecodeGetTaskResponse returns a decoder for responses returned by the tasks
+// get_task endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+func DecodeGetTaskResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
 			b, err := ioutil.ReadAll(resp.Body)
@@ -52,17 +63,22 @@ func DecodeCountTasksResponse(decoder func(*http.Response) goahttp.Decoder, rest
 		switch resp.StatusCode {
 		case http.StatusOK:
 			var (
-				body int
+				body GetTaskResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("tasks", "count_tasks", err)
+				return nil, goahttp.ErrDecodingError("tasks", "get_task", err)
 			}
-			return body, nil
+			err = ValidateGetTaskResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("tasks", "get_task", err)
+			}
+			res := NewGetTaskTaskOK(&body)
+			return res, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("tasks", "count_tasks", resp.StatusCode, string(body))
+			return nil, goahttp.ErrInvalidResponse("tasks", "get_task", resp.StatusCode, string(body))
 		}
 	}
 }

@@ -6,3 +6,29 @@
 // $ goa gen github.com/wild-mouse/go-example-todo-application/design
 
 package client
+
+import (
+	"fmt"
+	"strconv"
+
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
+)
+
+// BuildGetTaskPayload builds the payload for the tasks get_task endpoint from
+// CLI flags.
+func BuildGetTaskPayload(tasksGetTaskID string) (*tasks.GetTaskPayload, error) {
+	var err error
+	var id uint32
+	{
+		var v uint64
+		v, err = strconv.ParseUint(tasksGetTaskID, 10, 32)
+		id = uint32(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for id, must be UINT32")
+		}
+	}
+	payload := &tasks.GetTaskPayload{
+		ID: id,
+	}
+	return payload, nil
+}

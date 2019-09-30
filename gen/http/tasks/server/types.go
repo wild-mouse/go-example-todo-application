@@ -6,3 +6,33 @@
 // $ goa gen github.com/wild-mouse/go-example-todo-application/design
 
 package server
+
+import (
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
+)
+
+// GetTaskResponseBody is the type of the "tasks" service "get_task" endpoint
+// HTTP response body.
+type GetTaskResponseBody struct {
+	// ID is the unique id of the task.
+	ID *uint32 `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Name of task
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// NewGetTaskResponseBody builds the HTTP response body from the result of the
+// "get_task" endpoint of the "tasks" service.
+func NewGetTaskResponseBody(res *tasks.Task) *GetTaskResponseBody {
+	body := &GetTaskResponseBody{
+		ID:   res.ID,
+		Name: res.Name,
+	}
+	return body
+}
+
+// NewGetTaskPayload builds a tasks service get_task endpoint payload.
+func NewGetTaskPayload(id uint32) *tasks.GetTaskPayload {
+	return &tasks.GetTaskPayload{
+		ID: id,
+	}
+}

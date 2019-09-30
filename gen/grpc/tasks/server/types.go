@@ -9,12 +9,26 @@ package server
 
 import (
 	taskspb "github.com/wild-mouse/go-example-todo-application/gen/grpc/tasks/pb"
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
 )
 
-// NewCountTasksResponse builds the gRPC response type from the result of the
-// "count_tasks" endpoint of the "tasks" service.
-func NewCountTasksResponse(result int) *taskspb.CountTasksResponse {
-	message := &taskspb.CountTasksResponse{}
-	message.Field = int32(result)
+// NewGetTaskPayload builds the payload of the "get_task" endpoint of the
+// "tasks" service from the gRPC request type.
+func NewGetTaskPayload(message *taskspb.GetTaskRequest) *tasks.GetTaskPayload {
+	v := &tasks.GetTaskPayload{
+		ID: message.Id,
+	}
+	return v
+}
+
+// NewGetTaskResponse builds the gRPC response type from the result of the
+// "get_task" endpoint of the "tasks" service.
+func NewGetTaskResponse(result *tasks.Task) *taskspb.GetTaskResponse {
+	message := &taskspb.GetTaskResponse{
+		Name: result.Name,
+	}
+	if result.ID != nil {
+		message.Id = *result.ID
+	}
 	return message
 }
