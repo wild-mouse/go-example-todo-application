@@ -1,0 +1,25 @@
+// Code generated with goa v3.0.6, DO NOT EDIT.
+//
+// tasks protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/wild-mouse/go-example-todo-application/design
+
+syntax = "proto3";
+
+package tasks;
+
+option go_package = "taskspb";
+
+// The task service.
+service Tasks {
+	// CountTasks implements count_tasks.
+	rpc CountTasks (CountTasksRequest) returns (CountTasksResponse);
+}
+
+message CountTasksRequest {
+}
+
+message CountTasksResponse {
+	sint32 field = 1;
+}
