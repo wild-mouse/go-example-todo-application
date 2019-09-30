@@ -1,0 +1,30 @@
+// Code generated with goa v3.0.6, DO NOT EDIT.
+//
+// tasks protocol buffer definition
+//
+// Command:
+// $ goa gen github.com/wild-mouse/go-example-todo-application/design
+
+syntax = "proto3";
+
+package tasks;
+
+option go_package = "taskspb";
+
+// The task service.
+service Tasks {
+	// GetTask implements get_task.
+	rpc GetTask (GetTaskRequest) returns (GetTaskResponse);
+}
+
+message GetTaskRequest {
+	// ID of task
+	uint32 id = 1;
+}
+
+message GetTaskResponse {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
