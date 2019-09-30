@@ -8,6 +8,7 @@ var _ = API("tasks", func() {
 	Title("TODO Task Service")
 	Description("Service for tasks")
 	Server("tasks", func() {
+		Services("tasks", "swagger")
 		Host("localhost", func() {
 			URI("http://localhost:8000")
 			URI("grpc://localhost:8080")
@@ -47,4 +48,14 @@ var _ = Service("tasks", func() {
 	})
 
 	Files("/openapi.json", "./gen/http/openapi.json")
+})
+
+var _ = Service("swagger", func() {
+	Description("The swagger service serves the API swagger definition.")
+	HTTP(func() {
+		Path("/swagger")
+	})
+	Files("/swagger.json", "gen/http/openapi.json", func() {
+		Description("JSON document containing the API swagger definition")
+	})
 })

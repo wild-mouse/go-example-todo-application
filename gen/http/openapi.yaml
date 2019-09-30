@@ -24,6 +24,18 @@ paths:
             type: file
       schemes:
       - http
+  /swagger/swagger.json:
+    get:
+      summary: Download gen/http/openapi.json
+      description: JSON document containing the API swagger definition
+      operationId: swagger#/swagger/swagger.json
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+      schemes:
+      - http
   /tasks/{id}:
     get:
       tags:
