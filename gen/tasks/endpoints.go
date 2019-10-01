@@ -15,19 +15,31 @@ import (
 
 // Endpoints wraps the "tasks" service endpoints.
 type Endpoints struct {
-	GetTask goa.Endpoint
+	GetTask    goa.Endpoint
+	GetTasks   goa.Endpoint
+	AddTask    goa.Endpoint
+	UpdateTask goa.Endpoint
+	DeleteTask goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "tasks" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		GetTask: NewGetTaskEndpoint(s),
+		GetTask:    NewGetTaskEndpoint(s),
+		GetTasks:   NewGetTasksEndpoint(s),
+		AddTask:    NewAddTaskEndpoint(s),
+		UpdateTask: NewUpdateTaskEndpoint(s),
+		DeleteTask: NewDeleteTaskEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "tasks" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetTask = m(e.GetTask)
+	e.GetTasks = m(e.GetTasks)
+	e.AddTask = m(e.AddTask)
+	e.UpdateTask = m(e.UpdateTask)
+	e.DeleteTask = m(e.DeleteTask)
 }
 
 // NewGetTaskEndpoint returns an endpoint function that calls the method
@@ -36,5 +48,40 @@ func NewGetTaskEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*GetTaskPayload)
 		return s.GetTask(ctx, p)
+	}
+}
+
+// NewGetTasksEndpoint returns an endpoint function that calls the method
+// "get_tasks" of service "tasks".
+func NewGetTasksEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.GetTasks(ctx)
+	}
+}
+
+// NewAddTaskEndpoint returns an endpoint function that calls the method
+// "add_task" of service "tasks".
+func NewAddTaskEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*Task)
+		return s.AddTask(ctx, p)
+	}
+}
+
+// NewUpdateTaskEndpoint returns an endpoint function that calls the method
+// "update_task" of service "tasks".
+func NewUpdateTaskEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*Task)
+		return s.UpdateTask(ctx, p)
+	}
+}
+
+// NewDeleteTaskEndpoint returns an endpoint function that calls the method
+// "delete_task" of service "tasks".
+func NewDeleteTaskEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*DeleteTaskPayload)
+		return s.DeleteTask(ctx, p)
 	}
 }

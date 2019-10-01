@@ -44,3 +44,63 @@ func (c *Client) GetTask() goa.Endpoint {
 		return res, nil
 	}
 }
+
+// GetTasks calls the "GetTasks" function in taskspb.TasksClient interface.
+func (c *Client) GetTasks() goa.Endpoint {
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		inv := goagrpc.NewInvoker(
+			BuildGetTasksFunc(c.grpccli, c.opts...),
+			nil,
+			DecodeGetTasksResponse)
+		res, err := inv.Invoke(ctx, v)
+		if err != nil {
+			return nil, goa.Fault(err.Error())
+		}
+		return res, nil
+	}
+}
+
+// AddTask calls the "AddTask" function in taskspb.TasksClient interface.
+func (c *Client) AddTask() goa.Endpoint {
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		inv := goagrpc.NewInvoker(
+			BuildAddTaskFunc(c.grpccli, c.opts...),
+			EncodeAddTaskRequest,
+			DecodeAddTaskResponse)
+		res, err := inv.Invoke(ctx, v)
+		if err != nil {
+			return nil, goa.Fault(err.Error())
+		}
+		return res, nil
+	}
+}
+
+// UpdateTask calls the "UpdateTask" function in taskspb.TasksClient interface.
+func (c *Client) UpdateTask() goa.Endpoint {
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		inv := goagrpc.NewInvoker(
+			BuildUpdateTaskFunc(c.grpccli, c.opts...),
+			EncodeUpdateTaskRequest,
+			DecodeUpdateTaskResponse)
+		res, err := inv.Invoke(ctx, v)
+		if err != nil {
+			return nil, goa.Fault(err.Error())
+		}
+		return res, nil
+	}
+}
+
+// DeleteTask calls the "DeleteTask" function in taskspb.TasksClient interface.
+func (c *Client) DeleteTask() goa.Endpoint {
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		inv := goagrpc.NewInvoker(
+			BuildDeleteTaskFunc(c.grpccli, c.opts...),
+			EncodeDeleteTaskRequest,
+			DecodeDeleteTaskResponse)
+		res, err := inv.Invoke(ctx, v)
+		if err != nil {
+			return nil, goa.Fault(err.Error())
+		}
+		return res, nil
+	}
+}

@@ -8,7 +8,7 @@ var _ = API("tasks", func() {
 	Title("TODO Task Service")
 	Description("Service for tasks")
 	Server("tasks", func() {
-		Services("tasks", "swagger")
+		Services("tasks")
 		Host("localhost", func() {
 			URI("http://localhost:8000")
 			URI("grpc://localhost:8080")
@@ -44,18 +44,57 @@ var _ = Service("tasks", func() {
 			Response(StatusOK)
 		})
 		GRPC(func() {
+			Response(CodeOK)
 		})
 	})
 
-	Files("/openapi.json", "./gen/http/openapi.json")
-})
-
-var _ = Service("swagger", func() {
-	Description("The swagger service serves the API swagger definition.")
-	HTTP(func() {
-		Path("/swagger")
+	Method("get_tasks", func() {
+		Result(ArrayOf(Task))
+		HTTP(func() {
+			GET("/tasks")
+			Response(StatusOK)
+		})
+		GRPC(func() {
+			Response(CodeOK)
+		})
 	})
-	Files("/swagger.json", "gen/http/openapi.json", func() {
-		Description("JSON document containing the API swagger definition")
+
+	Method("add_task", func() {
+		Payload(Task)
+		Result(Task)
+		HTTP(func() {
+			POST("/tasks")
+			Response(StatusCreated)
+		})
+		GRPC(func() {
+			Response(CodeOK)
+		})
+	})
+
+	Method("update_task", func() {
+		Payload(Task)
+		Result(Task)
+		HTTP(func() {
+			PUT("/tasks/{id}")
+			Response(StatusOK)
+		})
+		GRPC(func() {
+			Response(CodeOK)
+		})
+	})
+
+	Method("delete_task", func() {
+		Payload(func() {
+			Field(1, "id", String)
+			Required("id")
+		})
+		Result(Task)
+		HTTP(func() {
+			DELETE("/task/{id}")
+			Response(StatusOK)
+		})
+		GRPC(func() {
+			Response(CodeOK)
+		})
 	})
 })

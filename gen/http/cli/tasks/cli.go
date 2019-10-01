@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `tasks get-task
+	return `tasks (get-task|get-tasks|add-task|update-task|delete-task)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` tasks get-task --id 3978120083` + "\n" +
+	return os.Args[0] + ` tasks get-task --id 3008156565` + "\n" +
 		""
 }
 
@@ -47,9 +47,25 @@ func ParseEndpoint(
 
 		tasksGetTaskFlags  = flag.NewFlagSet("get-task", flag.ExitOnError)
 		tasksGetTaskIDFlag = tasksGetTaskFlags.String("id", "REQUIRED", "ID of task")
+
+		tasksGetTasksFlags = flag.NewFlagSet("get-tasks", flag.ExitOnError)
+
+		tasksAddTaskFlags    = flag.NewFlagSet("add-task", flag.ExitOnError)
+		tasksAddTaskBodyFlag = tasksAddTaskFlags.String("body", "REQUIRED", "")
+
+		tasksUpdateTaskFlags    = flag.NewFlagSet("update-task", flag.ExitOnError)
+		tasksUpdateTaskBodyFlag = tasksUpdateTaskFlags.String("body", "REQUIRED", "")
+		tasksUpdateTaskIDFlag   = tasksUpdateTaskFlags.String("id", "REQUIRED", "ID is the unique id of the task.")
+
+		tasksDeleteTaskFlags  = flag.NewFlagSet("delete-task", flag.ExitOnError)
+		tasksDeleteTaskIDFlag = tasksDeleteTaskFlags.String("id", "REQUIRED", "")
 	)
 	tasksFlags.Usage = tasksUsage
 	tasksGetTaskFlags.Usage = tasksGetTaskUsage
+	tasksGetTasksFlags.Usage = tasksGetTasksUsage
+	tasksAddTaskFlags.Usage = tasksAddTaskUsage
+	tasksUpdateTaskFlags.Usage = tasksUpdateTaskUsage
+	tasksDeleteTaskFlags.Usage = tasksDeleteTaskUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -88,6 +104,18 @@ func ParseEndpoint(
 			case "get-task":
 				epf = tasksGetTaskFlags
 
+			case "get-tasks":
+				epf = tasksGetTasksFlags
+
+			case "add-task":
+				epf = tasksAddTaskFlags
+
+			case "update-task":
+				epf = tasksUpdateTaskFlags
+
+			case "delete-task":
+				epf = tasksDeleteTaskFlags
+
 			}
 
 		}
@@ -116,6 +144,18 @@ func ParseEndpoint(
 			case "get-task":
 				endpoint = c.GetTask()
 				data, err = tasksc.BuildGetTaskPayload(*tasksGetTaskIDFlag)
+			case "get-tasks":
+				endpoint = c.GetTasks()
+				data = nil
+			case "add-task":
+				endpoint = c.AddTask()
+				data, err = tasksc.BuildAddTaskPayload(*tasksAddTaskBodyFlag)
+			case "update-task":
+				endpoint = c.UpdateTask()
+				data, err = tasksc.BuildUpdateTaskPayload(*tasksUpdateTaskBodyFlag, *tasksUpdateTaskIDFlag)
+			case "delete-task":
+				endpoint = c.DeleteTask()
+				data, err = tasksc.BuildDeleteTaskPayload(*tasksDeleteTaskIDFlag)
 			}
 		}
 	}
@@ -134,6 +174,10 @@ Usage:
 
 COMMAND:
     get-task: GetTask implements get_task.
+    get-tasks: GetTasks implements get_tasks.
+    add-task: AddTask implements add_task.
+    update-task: UpdateTask implements update_task.
+    delete-task: DeleteTask implements delete_task.
 
 Additional help:
     %s tasks COMMAND --help
@@ -146,6 +190,55 @@ GetTask implements get_task.
     -id UINT32: ID of task
 
 Example:
-    `+os.Args[0]+` tasks get-task --id 3978120083
+    `+os.Args[0]+` tasks get-task --id 3008156565
+`, os.Args[0])
+}
+
+func tasksGetTasksUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks get-tasks
+
+GetTasks implements get_tasks.
+
+Example:
+    `+os.Args[0]+` tasks get-tasks
+`, os.Args[0])
+}
+
+func tasksAddTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks add-task -body JSON
+
+AddTask implements add_task.
+    -body JSON: 
+
+Example:
+    `+os.Args[0]+` tasks add-task --body '{
+      "id": 1,
+      "name": "Implement awesome application using Goa"
+   }'
+`, os.Args[0])
+}
+
+func tasksUpdateTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks update-task -body JSON -id UINT32
+
+UpdateTask implements update_task.
+    -body JSON: 
+    -id UINT32: ID is the unique id of the task.
+
+Example:
+    `+os.Args[0]+` tasks update-task --body '{
+      "name": "Implement awesome application using Goa"
+   }' --id 1
+`, os.Args[0])
+}
+
+func tasksDeleteTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks delete-task -id STRING
+
+DeleteTask implements delete_task.
+    -id STRING: 
+
+Example:
+    `+os.Args[0]+` tasks delete-task --id "Et consequatur."
 `, os.Args[0])
 }

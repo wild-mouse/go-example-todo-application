@@ -9,6 +9,7 @@ package server
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -51,6 +52,137 @@ func DecodeGetTaskRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp
 			return nil, err
 		}
 		payload := NewGetTaskPayload(id)
+
+		return payload, nil
+	}
+}
+
+// EncodeGetTasksResponse returns an encoder for responses returned by the
+// tasks get_tasks endpoint.
+func EncodeGetTasksResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.([]*tasks.Task)
+		enc := encoder(ctx, w)
+		body := NewGetTasksResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// EncodeAddTaskResponse returns an encoder for responses returned by the tasks
+// add_task endpoint.
+func EncodeAddTaskResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*tasks.Task)
+		enc := encoder(ctx, w)
+		body := NewAddTaskResponseBody(res)
+		w.WriteHeader(http.StatusCreated)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeAddTaskRequest returns a decoder for requests sent to the tasks
+// add_task endpoint.
+func DecodeAddTaskRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body AddTaskRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateAddTaskRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewAddTaskTask(&body)
+
+		return payload, nil
+	}
+}
+
+// EncodeUpdateTaskResponse returns an encoder for responses returned by the
+// tasks update_task endpoint.
+func EncodeUpdateTaskResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*tasks.Task)
+		enc := encoder(ctx, w)
+		body := NewUpdateTaskResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeUpdateTaskRequest returns a decoder for requests sent to the tasks
+// update_task endpoint.
+func DecodeUpdateTaskRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body UpdateTaskRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateUpdateTaskRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			id uint32
+
+			params = mux.Vars(r)
+		)
+		{
+			idRaw := params["id"]
+			v, err2 := strconv.ParseUint(idRaw, 10, 32)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("id", idRaw, "unsigned integer"))
+			}
+			id = uint32(v)
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewUpdateTaskTask(&body, id)
+
+		return payload, nil
+	}
+}
+
+// EncodeDeleteTaskResponse returns an encoder for responses returned by the
+// tasks delete_task endpoint.
+func EncodeDeleteTaskResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*tasks.Task)
+		enc := encoder(ctx, w)
+		body := NewDeleteTaskResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeDeleteTaskRequest returns a decoder for requests sent to the tasks
+// delete_task endpoint.
+func DecodeDeleteTaskRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			id string
+
+			params = mux.Vars(r)
+		)
+		id = params["id"]
+		payload := NewDeleteTaskPayload(id)
 
 		return payload, nil
 	}

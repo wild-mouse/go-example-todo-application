@@ -18,7 +18,11 @@ import (
 
 // Server implements the taskspb.TasksServer interface.
 type Server struct {
-	GetTaskH goagrpc.UnaryHandler
+	GetTaskH    goagrpc.UnaryHandler
+	GetTasksH   goagrpc.UnaryHandler
+	AddTaskH    goagrpc.UnaryHandler
+	UpdateTaskH goagrpc.UnaryHandler
+	DeleteTaskH goagrpc.UnaryHandler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -30,7 +34,11 @@ type ErrorNamer interface {
 // New instantiates the server struct with the tasks service endpoints.
 func New(e *tasks.Endpoints, uh goagrpc.UnaryHandler) *Server {
 	return &Server{
-		GetTaskH: NewGetTaskHandler(e.GetTask, uh),
+		GetTaskH:    NewGetTaskHandler(e.GetTask, uh),
+		GetTasksH:   NewGetTasksHandler(e.GetTasks, uh),
+		AddTaskH:    NewAddTaskHandler(e.AddTask, uh),
+		UpdateTaskH: NewUpdateTaskHandler(e.UpdateTask, uh),
+		DeleteTaskH: NewDeleteTaskHandler(e.DeleteTask, uh),
 	}
 }
 
@@ -52,4 +60,86 @@ func (s *Server) GetTask(ctx context.Context, message *taskspb.GetTaskRequest) (
 		return nil, goagrpc.EncodeError(err)
 	}
 	return resp.(*taskspb.GetTaskResponse), nil
+}
+
+// NewGetTasksHandler creates a gRPC handler which serves the "tasks" service
+// "get_tasks" endpoint.
+func NewGetTasksHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+	if h == nil {
+		h = goagrpc.NewUnaryHandler(endpoint, nil, EncodeGetTasksResponse)
+	}
+	return h
+}
+
+// GetTasks implements the "GetTasks" method in taskspb.TasksServer interface.
+func (s *Server) GetTasks(ctx context.Context, message *taskspb.GetTasksRequest) (*taskspb.GetTasksResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "get_tasks")
+	ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+	resp, err := s.GetTasksH.Handle(ctx, message)
+	if err != nil {
+		return nil, goagrpc.EncodeError(err)
+	}
+	return resp.(*taskspb.GetTasksResponse), nil
+}
+
+// NewAddTaskHandler creates a gRPC handler which serves the "tasks" service
+// "add_task" endpoint.
+func NewAddTaskHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+	if h == nil {
+		h = goagrpc.NewUnaryHandler(endpoint, DecodeAddTaskRequest, EncodeAddTaskResponse)
+	}
+	return h
+}
+
+// AddTask implements the "AddTask" method in taskspb.TasksServer interface.
+func (s *Server) AddTask(ctx context.Context, message *taskspb.AddTaskRequest) (*taskspb.AddTaskResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "add_task")
+	ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+	resp, err := s.AddTaskH.Handle(ctx, message)
+	if err != nil {
+		return nil, goagrpc.EncodeError(err)
+	}
+	return resp.(*taskspb.AddTaskResponse), nil
+}
+
+// NewUpdateTaskHandler creates a gRPC handler which serves the "tasks" service
+// "update_task" endpoint.
+func NewUpdateTaskHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+	if h == nil {
+		h = goagrpc.NewUnaryHandler(endpoint, DecodeUpdateTaskRequest, EncodeUpdateTaskResponse)
+	}
+	return h
+}
+
+// UpdateTask implements the "UpdateTask" method in taskspb.TasksServer
+// interface.
+func (s *Server) UpdateTask(ctx context.Context, message *taskspb.UpdateTaskRequest) (*taskspb.UpdateTaskResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "update_task")
+	ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+	resp, err := s.UpdateTaskH.Handle(ctx, message)
+	if err != nil {
+		return nil, goagrpc.EncodeError(err)
+	}
+	return resp.(*taskspb.UpdateTaskResponse), nil
+}
+
+// NewDeleteTaskHandler creates a gRPC handler which serves the "tasks" service
+// "delete_task" endpoint.
+func NewDeleteTaskHandler(endpoint goa.Endpoint, h goagrpc.UnaryHandler) goagrpc.UnaryHandler {
+	if h == nil {
+		h = goagrpc.NewUnaryHandler(endpoint, DecodeDeleteTaskRequest, EncodeDeleteTaskResponse)
+	}
+	return h
+}
+
+// DeleteTask implements the "DeleteTask" method in taskspb.TasksServer
+// interface.
+func (s *Server) DeleteTask(ctx context.Context, message *taskspb.DeleteTaskRequest) (*taskspb.DeleteTaskResponse, error) {
+	ctx = context.WithValue(ctx, goa.MethodKey, "delete_task")
+	ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+	resp, err := s.DeleteTaskH.Handle(ctx, message)
+	if err != nil {
+		return nil, goagrpc.EncodeError(err)
+	}
+	return resp.(*taskspb.DeleteTaskResponse), nil
 }

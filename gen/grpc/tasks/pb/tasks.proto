@@ -15,6 +15,14 @@ option go_package = "taskspb";
 service Tasks {
 	// GetTask implements get_task.
 	rpc GetTask (GetTaskRequest) returns (GetTaskResponse);
+	// GetTasks implements get_tasks.
+	rpc GetTasks (GetTasksRequest) returns (GetTasksResponse);
+	// AddTask implements add_task.
+	rpc AddTask (AddTaskRequest) returns (AddTaskResponse);
+	// UpdateTask implements update_task.
+	rpc UpdateTask (UpdateTaskRequest) returns (UpdateTaskResponse);
+	// DeleteTask implements delete_task.
+	rpc DeleteTask (DeleteTaskRequest) returns (DeleteTaskResponse);
 }
 
 message GetTaskRequest {
@@ -23,6 +31,59 @@ message GetTaskRequest {
 }
 
 message GetTaskResponse {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
+
+message GetTasksRequest {
+}
+
+message GetTasksResponse {
+	repeated Task field = 1;
+}
+// Task describes a task to be acted.
+message Task {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
+
+message AddTaskRequest {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
+
+message AddTaskResponse {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
+
+message UpdateTaskRequest {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
+
+message UpdateTaskResponse {
+	// ID is the unique id of the task.
+	uint32 id = 1;
+	// Name of task
+	string name = 2;
+}
+
+message DeleteTaskRequest {
+	string id = 1;
+}
+
+message DeleteTaskResponse {
 	// ID is the unique id of the task.
 	uint32 id = 1;
 	// Name of task

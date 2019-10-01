@@ -8,8 +8,11 @@
 package server
 
 import (
+	"unicode/utf8"
+
 	taskspb "github.com/wild-mouse/go-example-todo-application/gen/grpc/tasks/pb"
 	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // NewGetTaskPayload builds the payload of the "get_task" endpoint of the
@@ -31,4 +34,105 @@ func NewGetTaskResponse(result *tasks.Task) *taskspb.GetTaskResponse {
 		message.Id = *result.ID
 	}
 	return message
+}
+
+// NewGetTasksResponse builds the gRPC response type from the result of the
+// "get_tasks" endpoint of the "tasks" service.
+func NewGetTasksResponse(result []*tasks.Task) *taskspb.GetTasksResponse {
+	message := &taskspb.GetTasksResponse{}
+	message.Field = make([]*taskspb.Task, len(result))
+	for i, val := range result {
+		message.Field[i] = &taskspb.Task{
+			Name: val.Name,
+		}
+		if val.ID != nil {
+			message.Field[i].Id = *val.ID
+		}
+	}
+	return message
+}
+
+// NewAddTaskPayload builds the payload of the "add_task" endpoint of the
+// "tasks" service from the gRPC request type.
+func NewAddTaskPayload(message *taskspb.AddTaskRequest) *tasks.Task {
+	v := &tasks.Task{
+		Name: message.Name,
+	}
+	if message.Id != 0 {
+		v.ID = &message.Id
+	}
+	return v
+}
+
+// NewAddTaskResponse builds the gRPC response type from the result of the
+// "add_task" endpoint of the "tasks" service.
+func NewAddTaskResponse(result *tasks.Task) *taskspb.AddTaskResponse {
+	message := &taskspb.AddTaskResponse{
+		Name: result.Name,
+	}
+	if result.ID != nil {
+		message.Id = *result.ID
+	}
+	return message
+}
+
+// NewUpdateTaskPayload builds the payload of the "update_task" endpoint of the
+// "tasks" service from the gRPC request type.
+func NewUpdateTaskPayload(message *taskspb.UpdateTaskRequest) *tasks.Task {
+	v := &tasks.Task{
+		Name: message.Name,
+	}
+	if message.Id != 0 {
+		v.ID = &message.Id
+	}
+	return v
+}
+
+// NewUpdateTaskResponse builds the gRPC response type from the result of the
+// "update_task" endpoint of the "tasks" service.
+func NewUpdateTaskResponse(result *tasks.Task) *taskspb.UpdateTaskResponse {
+	message := &taskspb.UpdateTaskResponse{
+		Name: result.Name,
+	}
+	if result.ID != nil {
+		message.Id = *result.ID
+	}
+	return message
+}
+
+// NewDeleteTaskPayload builds the payload of the "delete_task" endpoint of the
+// "tasks" service from the gRPC request type.
+func NewDeleteTaskPayload(message *taskspb.DeleteTaskRequest) *tasks.DeleteTaskPayload {
+	v := &tasks.DeleteTaskPayload{
+		ID: message.Id,
+	}
+	return v
+}
+
+// NewDeleteTaskResponse builds the gRPC response type from the result of the
+// "delete_task" endpoint of the "tasks" service.
+func NewDeleteTaskResponse(result *tasks.Task) *taskspb.DeleteTaskResponse {
+	message := &taskspb.DeleteTaskResponse{
+		Name: result.Name,
+	}
+	if result.ID != nil {
+		message.Id = *result.ID
+	}
+	return message
+}
+
+// ValidateAddTaskRequest runs the validations defined on AddTaskRequest.
+func ValidateAddTaskRequest(message *taskspb.AddTaskRequest) (err error) {
+	if utf8.RuneCountInString(message.Name) > 100 {
+		err = goa.MergeErrors(err, goa.InvalidLengthError("message.name", message.Name, utf8.RuneCountInString(message.Name), 100, false))
+	}
+	return
+}
+
+// ValidateUpdateTaskRequest runs the validations defined on UpdateTaskRequest.
+func ValidateUpdateTaskRequest(message *taskspb.UpdateTaskRequest) (err error) {
+	if utf8.RuneCountInString(message.Name) > 100 {
+		err = goa.MergeErrors(err, goa.InvalidLengthError("message.name", message.Name, utf8.RuneCountInString(message.Name), 100, false))
+	}
+	return
 }

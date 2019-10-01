@@ -8,10 +8,13 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
+	"unicode/utf8"
 
 	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildGetTaskPayload builds the payload for the tasks get_task endpoint from
@@ -28,6 +31,76 @@ func BuildGetTaskPayload(tasksGetTaskID string) (*tasks.GetTaskPayload, error) {
 		}
 	}
 	payload := &tasks.GetTaskPayload{
+		ID: id,
+	}
+	return payload, nil
+}
+
+// BuildAddTaskPayload builds the payload for the tasks add_task endpoint from
+// CLI flags.
+func BuildAddTaskPayload(tasksAddTaskBody string) (*tasks.Task, error) {
+	var err error
+	var body AddTaskRequestBody
+	{
+		err = json.Unmarshal([]byte(tasksAddTaskBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"id\": 1,\n      \"name\": \"Implement awesome application using Goa\"\n   }'")
+		}
+		if utf8.RuneCountInString(body.Name) > 100 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", body.Name, utf8.RuneCountInString(body.Name), 100, false))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	v := &tasks.Task{
+		ID:   body.ID,
+		Name: body.Name,
+	}
+	return v, nil
+}
+
+// BuildUpdateTaskPayload builds the payload for the tasks update_task endpoint
+// from CLI flags.
+func BuildUpdateTaskPayload(tasksUpdateTaskBody string, tasksUpdateTaskID string) (*tasks.Task, error) {
+	var err error
+	var body UpdateTaskRequestBody
+	{
+		err = json.Unmarshal([]byte(tasksUpdateTaskBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"name\": \"Implement awesome application using Goa\"\n   }'")
+		}
+		if utf8.RuneCountInString(body.Name) > 100 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", body.Name, utf8.RuneCountInString(body.Name), 100, false))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var id uint32
+	{
+		var v uint64
+		v, err = strconv.ParseUint(tasksUpdateTaskID, 10, 32)
+		id = uint32(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for id, must be UINT32")
+		}
+	}
+	v := &tasks.Task{
+		Name: body.Name,
+	}
+	v.ID = &id
+	return v, nil
+}
+
+// BuildDeleteTaskPayload builds the payload for the tasks delete_task endpoint
+// from CLI flags.
+func BuildDeleteTaskPayload(tasksDeleteTaskID string) (*tasks.DeleteTaskPayload, error) {
+	var id string
+	{
+		id = tasksDeleteTaskID
+	}
+	payload := &tasks.DeleteTaskPayload{
 		ID: id,
 	}
 	return payload, nil

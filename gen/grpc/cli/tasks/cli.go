@@ -22,14 +22,14 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `tasks get-task
+	return `tasks (get-task|get-tasks|add-task|update-task|delete-task)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` tasks get-task --message '{
-      "id": 2604933010
+      "id": 955004123
    }'` + "\n" +
 		""
 }
@@ -42,9 +42,24 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 
 		tasksGetTaskFlags       = flag.NewFlagSet("get-task", flag.ExitOnError)
 		tasksGetTaskMessageFlag = tasksGetTaskFlags.String("message", "", "")
+
+		tasksGetTasksFlags = flag.NewFlagSet("get-tasks", flag.ExitOnError)
+
+		tasksAddTaskFlags       = flag.NewFlagSet("add-task", flag.ExitOnError)
+		tasksAddTaskMessageFlag = tasksAddTaskFlags.String("message", "", "")
+
+		tasksUpdateTaskFlags       = flag.NewFlagSet("update-task", flag.ExitOnError)
+		tasksUpdateTaskMessageFlag = tasksUpdateTaskFlags.String("message", "", "")
+
+		tasksDeleteTaskFlags       = flag.NewFlagSet("delete-task", flag.ExitOnError)
+		tasksDeleteTaskMessageFlag = tasksDeleteTaskFlags.String("message", "", "")
 	)
 	tasksFlags.Usage = tasksUsage
 	tasksGetTaskFlags.Usage = tasksGetTaskUsage
+	tasksGetTasksFlags.Usage = tasksGetTasksUsage
+	tasksAddTaskFlags.Usage = tasksAddTaskUsage
+	tasksUpdateTaskFlags.Usage = tasksUpdateTaskUsage
+	tasksDeleteTaskFlags.Usage = tasksDeleteTaskUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -83,6 +98,18 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 			case "get-task":
 				epf = tasksGetTaskFlags
 
+			case "get-tasks":
+				epf = tasksGetTasksFlags
+
+			case "add-task":
+				epf = tasksAddTaskFlags
+
+			case "update-task":
+				epf = tasksUpdateTaskFlags
+
+			case "delete-task":
+				epf = tasksDeleteTaskFlags
+
 			}
 
 		}
@@ -111,6 +138,18 @@ func ParseEndpoint(cc *grpc.ClientConn, opts ...grpc.CallOption) (goa.Endpoint, 
 			case "get-task":
 				endpoint = c.GetTask()
 				data, err = tasksc.BuildGetTaskPayload(*tasksGetTaskMessageFlag)
+			case "get-tasks":
+				endpoint = c.GetTasks()
+				data = nil
+			case "add-task":
+				endpoint = c.AddTask()
+				data, err = tasksc.BuildAddTaskPayload(*tasksAddTaskMessageFlag)
+			case "update-task":
+				endpoint = c.UpdateTask()
+				data, err = tasksc.BuildUpdateTaskPayload(*tasksUpdateTaskMessageFlag)
+			case "delete-task":
+				endpoint = c.DeleteTask()
+				data, err = tasksc.BuildDeleteTaskPayload(*tasksDeleteTaskMessageFlag)
 			}
 		}
 	}
@@ -129,6 +168,10 @@ Usage:
 
 COMMAND:
     get-task: GetTask implements get_task.
+    get-tasks: GetTasks implements get_tasks.
+    add-task: AddTask implements add_task.
+    update-task: UpdateTask implements update_task.
+    delete-task: DeleteTask implements delete_task.
 
 Additional help:
     %s tasks COMMAND --help
@@ -142,7 +185,58 @@ GetTask implements get_task.
 
 Example:
     `+os.Args[0]+` tasks get-task --message '{
-      "id": 2604933010
+      "id": 955004123
+   }'
+`, os.Args[0])
+}
+
+func tasksGetTasksUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks get-tasks
+
+GetTasks implements get_tasks.
+
+Example:
+    `+os.Args[0]+` tasks get-tasks
+`, os.Args[0])
+}
+
+func tasksAddTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks add-task -message JSON
+
+AddTask implements add_task.
+    -message JSON: 
+
+Example:
+    `+os.Args[0]+` tasks add-task --message '{
+      "id": 1,
+      "name": "Implement awesome application using Goa"
+   }'
+`, os.Args[0])
+}
+
+func tasksUpdateTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks update-task -message JSON
+
+UpdateTask implements update_task.
+    -message JSON: 
+
+Example:
+    `+os.Args[0]+` tasks update-task --message '{
+      "id": 1,
+      "name": "Implement awesome application using Goa"
+   }'
+`, os.Args[0])
+}
+
+func tasksDeleteTaskUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] tasks delete-task -message JSON
+
+DeleteTask implements delete_task.
+    -message JSON: 
+
+Example:
+    `+os.Args[0]+` tasks delete-task --message '{
+      "id": "Quam voluptatum."
    }'
 `, os.Args[0])
 }
