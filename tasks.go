@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/wild-mouse/go-example-todo-application/gen/tasks"
+	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
 )
 
 // tasks service example implementation.
@@ -20,8 +20,34 @@ func NewTasks(logger *log.Logger) tasks.Service {
 
 // GetTask implements get_task.
 func (s *taskssrvc) GetTask(ctx context.Context, p *tasks.GetTaskPayload) (res *tasks.Task, err error) {
-	id := uint32(1);
-	res = &tasks.Task{ID: &id, Name: "This is a simple task."}
+	res = &tasks.Task{}
 	s.logger.Print("tasks.get_task")
-	return res, nil
+	return
+}
+
+// GetTasks implements get_tasks.
+func (s *taskssrvc) GetTasks(ctx context.Context) (res []*tasks.Task, err error) {
+	s.logger.Print("tasks.get_tasks")
+	return
+}
+
+// AddTask implements add_task.
+func (s *taskssrvc) AddTask(ctx context.Context, p *tasks.Task) (res *tasks.Task, err error) {
+	res = &tasks.Task{}
+	s.logger.Print("tasks.add_task")
+	return
+}
+
+// UpdateTask implements update_task.
+func (s *taskssrvc) UpdateTask(ctx context.Context, p *tasks.Task) (res *tasks.Task, err error) {
+	res = &tasks.Task{}
+	s.logger.Print("tasks.update_task")
+	return
+}
+
+// DeleteTask implements delete_task.
+func (s *taskssrvc) DeleteTask(ctx context.Context, p *tasks.DeleteTaskPayload) (res *tasks.Task, err error) {
+	res = &tasks.Task{}
+	s.logger.Print("tasks.delete_task")
+	return
 }

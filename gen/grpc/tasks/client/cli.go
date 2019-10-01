@@ -24,11 +24,74 @@ func BuildGetTaskPayload(tasksGetTaskMessage string) (*tasks.GetTaskPayload, err
 		if tasksGetTaskMessage != "" {
 			err = json.Unmarshal([]byte(tasksGetTaskMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"id\": 2604933010\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"id\": 955004123\n   }'")
 			}
 		}
 	}
 	v := &tasks.GetTaskPayload{
+		ID: message.Id,
+	}
+	return v, nil
+}
+
+// BuildAddTaskPayload builds the payload for the tasks add_task endpoint from
+// CLI flags.
+func BuildAddTaskPayload(tasksAddTaskMessage string) (*tasks.Task, error) {
+	var err error
+	var message taskspb.AddTaskRequest
+	{
+		if tasksAddTaskMessage != "" {
+			err = json.Unmarshal([]byte(tasksAddTaskMessage), &message)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"id\": 1,\n      \"name\": \"Implement awesome application using Goa\"\n   }'")
+			}
+		}
+	}
+	v := &tasks.Task{
+		Name: message.Name,
+	}
+	if message.Id != 0 {
+		v.ID = &message.Id
+	}
+	return v, nil
+}
+
+// BuildUpdateTaskPayload builds the payload for the tasks update_task endpoint
+// from CLI flags.
+func BuildUpdateTaskPayload(tasksUpdateTaskMessage string) (*tasks.Task, error) {
+	var err error
+	var message taskspb.UpdateTaskRequest
+	{
+		if tasksUpdateTaskMessage != "" {
+			err = json.Unmarshal([]byte(tasksUpdateTaskMessage), &message)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"id\": 1,\n      \"name\": \"Implement awesome application using Goa\"\n   }'")
+			}
+		}
+	}
+	v := &tasks.Task{
+		Name: message.Name,
+	}
+	if message.Id != 0 {
+		v.ID = &message.Id
+	}
+	return v, nil
+}
+
+// BuildDeleteTaskPayload builds the payload for the tasks delete_task endpoint
+// from CLI flags.
+func BuildDeleteTaskPayload(tasksDeleteTaskMessage string) (*tasks.DeleteTaskPayload, error) {
+	var err error
+	var message taskspb.DeleteTaskRequest
+	{
+		if tasksDeleteTaskMessage != "" {
+			err = json.Unmarshal([]byte(tasksDeleteTaskMessage), &message)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for message, example of valid JSON:\n%s", "'{\n      \"id\": \"Quam voluptatum.\"\n   }'")
+			}
+		}
+	}
+	v := &tasks.DeleteTaskPayload{
 		ID: message.Id,
 	}
 	return v, nil

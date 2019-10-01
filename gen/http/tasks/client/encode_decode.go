@@ -16,6 +16,7 @@ import (
 
 	tasks "github.com/wild-mouse/go-example-todo-application/gen/tasks"
 	goahttp "goa.design/goa/v3/http"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildGetTaskRequest instantiates a HTTP request object with method and path
@@ -79,6 +80,286 @@ func DecodeGetTaskResponse(decoder func(*http.Response) goahttp.Decoder, restore
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("tasks", "get_task", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildGetTasksRequest instantiates a HTTP request object with method and path
+// set to call the "tasks" service "get_tasks" endpoint
+func (c *Client) BuildGetTasksRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetTasksTasksPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("tasks", "get_tasks", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeGetTasksResponse returns a decoder for responses returned by the tasks
+// get_tasks endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+func DecodeGetTasksResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetTasksResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("tasks", "get_tasks", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateTaskResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("tasks", "get_tasks", err)
+			}
+			res := NewGetTasksTaskOK(body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("tasks", "get_tasks", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildAddTaskRequest instantiates a HTTP request object with method and path
+// set to call the "tasks" service "add_task" endpoint
+func (c *Client) BuildAddTaskRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: AddTaskTasksPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("tasks", "add_task", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeAddTaskRequest returns an encoder for requests sent to the tasks
+// add_task server.
+func EncodeAddTaskRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*tasks.Task)
+		if !ok {
+			return goahttp.ErrInvalidType("tasks", "add_task", "*tasks.Task", v)
+		}
+		body := NewAddTaskRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("tasks", "add_task", err)
+		}
+		return nil
+	}
+}
+
+// DecodeAddTaskResponse returns a decoder for responses returned by the tasks
+// add_task endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+func DecodeAddTaskResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusCreated:
+			var (
+				body AddTaskResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("tasks", "add_task", err)
+			}
+			err = ValidateAddTaskResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("tasks", "add_task", err)
+			}
+			res := NewAddTaskTaskCreated(&body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("tasks", "add_task", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildUpdateTaskRequest instantiates a HTTP request object with method and
+// path set to call the "tasks" service "update_task" endpoint
+func (c *Client) BuildUpdateTaskRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id uint32
+	)
+	{
+		p, ok := v.(*tasks.Task)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("tasks", "update_task", "*tasks.Task", v)
+		}
+		if p.ID != nil {
+			id = *p.ID
+		}
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateTaskTasksPath(id)}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("tasks", "update_task", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateTaskRequest returns an encoder for requests sent to the tasks
+// update_task server.
+func EncodeUpdateTaskRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*tasks.Task)
+		if !ok {
+			return goahttp.ErrInvalidType("tasks", "update_task", "*tasks.Task", v)
+		}
+		body := NewUpdateTaskRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("tasks", "update_task", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateTaskResponse returns a decoder for responses returned by the
+// tasks update_task endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeUpdateTaskResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body UpdateTaskResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("tasks", "update_task", err)
+			}
+			err = ValidateUpdateTaskResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("tasks", "update_task", err)
+			}
+			res := NewUpdateTaskTaskOK(&body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("tasks", "update_task", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildDeleteTaskRequest instantiates a HTTP request object with method and
+// path set to call the "tasks" service "delete_task" endpoint
+func (c *Client) BuildDeleteTaskRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id string
+	)
+	{
+		p, ok := v.(*tasks.DeleteTaskPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("tasks", "delete_task", "*tasks.DeleteTaskPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteTaskTasksPath(id)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("tasks", "delete_task", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeDeleteTaskResponse returns a decoder for responses returned by the
+// tasks delete_task endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeDeleteTaskResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body DeleteTaskResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("tasks", "delete_task", err)
+			}
+			err = ValidateDeleteTaskResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("tasks", "delete_task", err)
+			}
+			res := NewDeleteTaskTaskOK(&body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("tasks", "delete_task", resp.StatusCode, string(body))
 		}
 	}
 }

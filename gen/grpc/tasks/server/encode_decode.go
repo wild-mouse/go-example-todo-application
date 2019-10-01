@@ -45,3 +45,110 @@ func DecodeGetTaskRequest(ctx context.Context, v interface{}, md metadata.MD) (i
 	}
 	return payload, nil
 }
+
+// EncodeGetTasksResponse encodes responses from the "tasks" service
+// "get_tasks" endpoint.
+func EncodeGetTasksResponse(ctx context.Context, v interface{}, hdr, trlr *metadata.MD) (interface{}, error) {
+	result, ok := v.([]*tasks.Task)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("tasks", "get_tasks", "[]*tasks.Task", v)
+	}
+	resp := NewGetTasksResponse(result)
+	return resp, nil
+}
+
+// EncodeAddTaskResponse encodes responses from the "tasks" service "add_task"
+// endpoint.
+func EncodeAddTaskResponse(ctx context.Context, v interface{}, hdr, trlr *metadata.MD) (interface{}, error) {
+	result, ok := v.(*tasks.Task)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("tasks", "add_task", "*tasks.Task", v)
+	}
+	resp := NewAddTaskResponse(result)
+	return resp, nil
+}
+
+// DecodeAddTaskRequest decodes requests sent to "tasks" service "add_task"
+// endpoint.
+func DecodeAddTaskRequest(ctx context.Context, v interface{}, md metadata.MD) (interface{}, error) {
+	var (
+		message *taskspb.AddTaskRequest
+		ok      bool
+	)
+	{
+		if message, ok = v.(*taskspb.AddTaskRequest); !ok {
+			return nil, goagrpc.ErrInvalidType("tasks", "add_task", "*taskspb.AddTaskRequest", v)
+		}
+		if err := ValidateAddTaskRequest(message); err != nil {
+			return nil, err
+		}
+	}
+	var payload *tasks.Task
+	{
+		payload = NewAddTaskPayload(message)
+	}
+	return payload, nil
+}
+
+// EncodeUpdateTaskResponse encodes responses from the "tasks" service
+// "update_task" endpoint.
+func EncodeUpdateTaskResponse(ctx context.Context, v interface{}, hdr, trlr *metadata.MD) (interface{}, error) {
+	result, ok := v.(*tasks.Task)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("tasks", "update_task", "*tasks.Task", v)
+	}
+	resp := NewUpdateTaskResponse(result)
+	return resp, nil
+}
+
+// DecodeUpdateTaskRequest decodes requests sent to "tasks" service
+// "update_task" endpoint.
+func DecodeUpdateTaskRequest(ctx context.Context, v interface{}, md metadata.MD) (interface{}, error) {
+	var (
+		message *taskspb.UpdateTaskRequest
+		ok      bool
+	)
+	{
+		if message, ok = v.(*taskspb.UpdateTaskRequest); !ok {
+			return nil, goagrpc.ErrInvalidType("tasks", "update_task", "*taskspb.UpdateTaskRequest", v)
+		}
+		if err := ValidateUpdateTaskRequest(message); err != nil {
+			return nil, err
+		}
+	}
+	var payload *tasks.Task
+	{
+		payload = NewUpdateTaskPayload(message)
+	}
+	return payload, nil
+}
+
+// EncodeDeleteTaskResponse encodes responses from the "tasks" service
+// "delete_task" endpoint.
+func EncodeDeleteTaskResponse(ctx context.Context, v interface{}, hdr, trlr *metadata.MD) (interface{}, error) {
+	result, ok := v.(*tasks.Task)
+	if !ok {
+		return nil, goagrpc.ErrInvalidType("tasks", "delete_task", "*tasks.Task", v)
+	}
+	resp := NewDeleteTaskResponse(result)
+	return resp, nil
+}
+
+// DecodeDeleteTaskRequest decodes requests sent to "tasks" service
+// "delete_task" endpoint.
+func DecodeDeleteTaskRequest(ctx context.Context, v interface{}, md metadata.MD) (interface{}, error) {
+	var (
+		message *taskspb.DeleteTaskRequest
+		ok      bool
+	)
+	{
+		if message, ok = v.(*taskspb.DeleteTaskRequest); !ok {
+			return nil, goagrpc.ErrInvalidType("tasks", "delete_task", "*taskspb.DeleteTaskRequest", v)
+		}
+	}
+	var payload *tasks.DeleteTaskPayload
+	{
+		payload = NewDeleteTaskPayload(message)
+	}
+	return payload, nil
+}

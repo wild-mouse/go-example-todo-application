@@ -113,25 +113,447 @@ func (m *GetTaskResponse) GetName() string {
 	return ""
 }
 
+type GetTasksRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTasksRequest) Reset()         { *m = GetTasksRequest{} }
+func (m *GetTasksRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTasksRequest) ProtoMessage()    {}
+func (*GetTasksRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{2}
+}
+
+func (m *GetTasksRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTasksRequest.Unmarshal(m, b)
+}
+func (m *GetTasksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTasksRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTasksRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTasksRequest.Merge(m, src)
+}
+func (m *GetTasksRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTasksRequest.Size(m)
+}
+func (m *GetTasksRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTasksRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTasksRequest proto.InternalMessageInfo
+
+type GetTasksResponse struct {
+	Field                []*Task  `protobuf:"bytes,1,rep,name=field,proto3" json:"field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTasksResponse) Reset()         { *m = GetTasksResponse{} }
+func (m *GetTasksResponse) String() string { return proto.CompactTextString(m) }
+func (*GetTasksResponse) ProtoMessage()    {}
+func (*GetTasksResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{3}
+}
+
+func (m *GetTasksResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTasksResponse.Unmarshal(m, b)
+}
+func (m *GetTasksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTasksResponse.Marshal(b, m, deterministic)
+}
+func (m *GetTasksResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTasksResponse.Merge(m, src)
+}
+func (m *GetTasksResponse) XXX_Size() int {
+	return xxx_messageInfo_GetTasksResponse.Size(m)
+}
+func (m *GetTasksResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTasksResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTasksResponse proto.InternalMessageInfo
+
+func (m *GetTasksResponse) GetField() []*Task {
+	if m != nil {
+		return m.Field
+	}
+	return nil
+}
+
+// Task describes a task to be acted.
+type Task struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Task) Reset()         { *m = Task{} }
+func (m *Task) String() string { return proto.CompactTextString(m) }
+func (*Task) ProtoMessage()    {}
+func (*Task) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{4}
+}
+
+func (m *Task) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Task.Unmarshal(m, b)
+}
+func (m *Task) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Task.Marshal(b, m, deterministic)
+}
+func (m *Task) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Task.Merge(m, src)
+}
+func (m *Task) XXX_Size() int {
+	return xxx_messageInfo_Task.Size(m)
+}
+func (m *Task) XXX_DiscardUnknown() {
+	xxx_messageInfo_Task.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Task proto.InternalMessageInfo
+
+func (m *Task) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *Task) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type AddTaskRequest struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AddTaskRequest) Reset()         { *m = AddTaskRequest{} }
+func (m *AddTaskRequest) String() string { return proto.CompactTextString(m) }
+func (*AddTaskRequest) ProtoMessage()    {}
+func (*AddTaskRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{5}
+}
+
+func (m *AddTaskRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddTaskRequest.Unmarshal(m, b)
+}
+func (m *AddTaskRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddTaskRequest.Marshal(b, m, deterministic)
+}
+func (m *AddTaskRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddTaskRequest.Merge(m, src)
+}
+func (m *AddTaskRequest) XXX_Size() int {
+	return xxx_messageInfo_AddTaskRequest.Size(m)
+}
+func (m *AddTaskRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddTaskRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddTaskRequest proto.InternalMessageInfo
+
+func (m *AddTaskRequest) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *AddTaskRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type AddTaskResponse struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AddTaskResponse) Reset()         { *m = AddTaskResponse{} }
+func (m *AddTaskResponse) String() string { return proto.CompactTextString(m) }
+func (*AddTaskResponse) ProtoMessage()    {}
+func (*AddTaskResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{6}
+}
+
+func (m *AddTaskResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddTaskResponse.Unmarshal(m, b)
+}
+func (m *AddTaskResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddTaskResponse.Marshal(b, m, deterministic)
+}
+func (m *AddTaskResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddTaskResponse.Merge(m, src)
+}
+func (m *AddTaskResponse) XXX_Size() int {
+	return xxx_messageInfo_AddTaskResponse.Size(m)
+}
+func (m *AddTaskResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddTaskResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddTaskResponse proto.InternalMessageInfo
+
+func (m *AddTaskResponse) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *AddTaskResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type UpdateTaskRequest struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateTaskRequest) Reset()         { *m = UpdateTaskRequest{} }
+func (m *UpdateTaskRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateTaskRequest) ProtoMessage()    {}
+func (*UpdateTaskRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{7}
+}
+
+func (m *UpdateTaskRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateTaskRequest.Unmarshal(m, b)
+}
+func (m *UpdateTaskRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateTaskRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateTaskRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateTaskRequest.Merge(m, src)
+}
+func (m *UpdateTaskRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateTaskRequest.Size(m)
+}
+func (m *UpdateTaskRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateTaskRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateTaskRequest proto.InternalMessageInfo
+
+func (m *UpdateTaskRequest) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *UpdateTaskRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type UpdateTaskResponse struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateTaskResponse) Reset()         { *m = UpdateTaskResponse{} }
+func (m *UpdateTaskResponse) String() string { return proto.CompactTextString(m) }
+func (*UpdateTaskResponse) ProtoMessage()    {}
+func (*UpdateTaskResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{8}
+}
+
+func (m *UpdateTaskResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateTaskResponse.Unmarshal(m, b)
+}
+func (m *UpdateTaskResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateTaskResponse.Marshal(b, m, deterministic)
+}
+func (m *UpdateTaskResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateTaskResponse.Merge(m, src)
+}
+func (m *UpdateTaskResponse) XXX_Size() int {
+	return xxx_messageInfo_UpdateTaskResponse.Size(m)
+}
+func (m *UpdateTaskResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateTaskResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateTaskResponse proto.InternalMessageInfo
+
+func (m *UpdateTaskResponse) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *UpdateTaskResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type DeleteTaskRequest struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteTaskRequest) Reset()         { *m = DeleteTaskRequest{} }
+func (m *DeleteTaskRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteTaskRequest) ProtoMessage()    {}
+func (*DeleteTaskRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{9}
+}
+
+func (m *DeleteTaskRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteTaskRequest.Unmarshal(m, b)
+}
+func (m *DeleteTaskRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteTaskRequest.Marshal(b, m, deterministic)
+}
+func (m *DeleteTaskRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteTaskRequest.Merge(m, src)
+}
+func (m *DeleteTaskRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteTaskRequest.Size(m)
+}
+func (m *DeleteTaskRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteTaskRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteTaskRequest proto.InternalMessageInfo
+
+func (m *DeleteTaskRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type DeleteTaskResponse struct {
+	// ID is the unique id of the task.
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of task
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteTaskResponse) Reset()         { *m = DeleteTaskResponse{} }
+func (m *DeleteTaskResponse) String() string { return proto.CompactTextString(m) }
+func (*DeleteTaskResponse) ProtoMessage()    {}
+func (*DeleteTaskResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3834c8ef8464a3f, []int{10}
+}
+
+func (m *DeleteTaskResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteTaskResponse.Unmarshal(m, b)
+}
+func (m *DeleteTaskResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteTaskResponse.Marshal(b, m, deterministic)
+}
+func (m *DeleteTaskResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteTaskResponse.Merge(m, src)
+}
+func (m *DeleteTaskResponse) XXX_Size() int {
+	return xxx_messageInfo_DeleteTaskResponse.Size(m)
+}
+func (m *DeleteTaskResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteTaskResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteTaskResponse proto.InternalMessageInfo
+
+func (m *DeleteTaskResponse) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *DeleteTaskResponse) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*GetTaskRequest)(nil), "tasks.GetTaskRequest")
 	proto.RegisterType((*GetTaskResponse)(nil), "tasks.GetTaskResponse")
+	proto.RegisterType((*GetTasksRequest)(nil), "tasks.GetTasksRequest")
+	proto.RegisterType((*GetTasksResponse)(nil), "tasks.GetTasksResponse")
+	proto.RegisterType((*Task)(nil), "tasks.Task")
+	proto.RegisterType((*AddTaskRequest)(nil), "tasks.AddTaskRequest")
+	proto.RegisterType((*AddTaskResponse)(nil), "tasks.AddTaskResponse")
+	proto.RegisterType((*UpdateTaskRequest)(nil), "tasks.UpdateTaskRequest")
+	proto.RegisterType((*UpdateTaskResponse)(nil), "tasks.UpdateTaskResponse")
+	proto.RegisterType((*DeleteTaskRequest)(nil), "tasks.DeleteTaskRequest")
+	proto.RegisterType((*DeleteTaskResponse)(nil), "tasks.DeleteTaskResponse")
 }
 
 func init() { proto.RegisterFile("tasks.proto", fileDescriptor_b3834c8ef8464a3f) }
 
 var fileDescriptor_b3834c8ef8464a3f = []byte{
-	// 145 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x49, 0x2c, 0xce,
-	0x2e, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x73, 0x94, 0x14, 0xb8, 0xf8, 0xdc,
-	0x53, 0x4b, 0x42, 0x12, 0x8b, 0xb3, 0x83, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84, 0xf8, 0xb8,
-	0x98, 0x32, 0x53, 0x24, 0x18, 0x15, 0x18, 0x35, 0x78, 0x83, 0x98, 0x32, 0x53, 0x94, 0x4c, 0xb9,
-	0xf8, 0xe1, 0x2a, 0x8a, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0xd1, 0x95, 0x08, 0x09, 0x71, 0xb1, 0xe4,
-	0x25, 0xe6, 0xa6, 0x4a, 0x30, 0x29, 0x30, 0x6a, 0x70, 0x06, 0x81, 0xd9, 0x46, 0x8e, 0x5c, 0xac,
-	0x20, 0x3d, 0xc5, 0x42, 0x16, 0x5c, 0xec, 0x50, 0xfd, 0x42, 0xa2, 0x7a, 0x10, 0x17, 0xa0, 0xda,
-	0x28, 0x25, 0x86, 0x2e, 0x0c, 0xb1, 0xc6, 0x89, 0x33, 0x8a, 0x1d, 0x2c, 0x51, 0x90, 0x94, 0xc4,
-	0x06, 0x76, 0xb4, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x8f, 0xc6, 0x87, 0x8d, 0xc3, 0x00, 0x00,
-	0x00,
+	// 303 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0x4d, 0x4f, 0x83, 0x40,
+	0x10, 0x0d, 0x58, 0x44, 0x1e, 0x91, 0xca, 0x24, 0x2a, 0x72, 0x42, 0xbc, 0x10, 0x0f, 0x3d, 0x54,
+	0x89, 0x24, 0x9e, 0x6a, 0x4c, 0xbc, 0x13, 0xbd, 0x78, 0xa3, 0x61, 0x4d, 0x48, 0x6b, 0x41, 0x17,
+	0xff, 0x9e, 0xbf, 0xcd, 0x74, 0xbb, 0x5d, 0x5a, 0xa8, 0x4d, 0xb9, 0xb1, 0x33, 0xef, 0x83, 0x9d,
+	0x37, 0x0b, 0xbb, 0xce, 0xf8, 0x8c, 0x8f, 0xaa, 0xef, 0xb2, 0x2e, 0xc9, 0x10, 0x87, 0x30, 0x80,
+	0xf3, 0xc2, 0xea, 0xd7, 0x8c, 0xcf, 0x52, 0xf6, 0xf5, 0xc3, 0x78, 0x4d, 0x0e, 0xf4, 0x22, 0xf7,
+	0xb4, 0x40, 0x8b, 0x4e, 0x53, 0xbd, 0xc8, 0xc3, 0x18, 0x43, 0x85, 0xe0, 0x55, 0xb9, 0xe0, 0xac,
+	0x0d, 0x21, 0xc2, 0x60, 0x91, 0x7d, 0x32, 0x4f, 0x0f, 0xb4, 0xc8, 0x4a, 0xc5, 0x77, 0xe8, 0x2a,
+	0x1a, 0x97, 0xca, 0x61, 0x8c, 0xb3, 0xa6, 0x24, 0xa5, 0xae, 0x61, 0x7c, 0x14, 0x6c, 0xbe, 0x54,
+	0x3b, 0x8a, 0xec, 0xb1, 0x3d, 0x5a, 0xfd, 0xa3, 0xb0, 0x5b, 0x75, 0xc2, 0x5b, 0x0c, 0x96, 0xc7,
+	0x83, 0x5c, 0xef, 0xe1, 0x4c, 0xf2, 0x7c, 0xcf, 0x75, 0x76, 0xb2, 0x62, 0x0c, 0x15, 0xab, 0xc7,
+	0x15, 0x1f, 0xe0, 0xbe, 0x55, 0x79, 0x56, 0xb3, 0xbe, 0x7e, 0x09, 0x68, 0x93, 0xd8, 0xc3, 0xf2,
+	0x06, 0xee, 0x33, 0x9b, 0xb3, 0xff, 0x2c, 0x2d, 0x91, 0x58, 0x02, 0xda, 0x04, 0x1d, 0x2e, 0x3f,
+	0xfe, 0xd5, 0x61, 0x88, 0x7c, 0x28, 0x81, 0x29, 0xb3, 0xa2, 0x73, 0x99, 0xc9, 0xf6, 0x9e, 0xf8,
+	0x17, 0xed, 0xb2, 0xf4, 0x79, 0xc4, 0xc9, 0x3a, 0x65, 0x6a, 0x61, 0xd6, 0x9b, 0xe0, 0x5f, 0x76,
+	0xea, 0x92, 0x9c, 0xc0, 0x94, 0x49, 0x28, 0xdb, 0xed, 0x3c, 0x95, 0x6d, 0x3b, 0xb0, 0x09, 0xd0,
+	0xcc, 0x94, 0x3c, 0x89, 0xea, 0xe4, 0xe3, 0x5f, 0xed, 0xe8, 0x34, 0x12, 0xcd, 0xdc, 0x94, 0x44,
+	0x67, 0xde, 0x4a, 0xa2, 0x3b, 0xe4, 0x27, 0xeb, 0xdd, 0x14, 0xbd, 0x6a, 0x3a, 0x3d, 0x16, 0xef,
+	0xec, 0xee, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x64, 0x37, 0xc4, 0x6d, 0x76, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -148,6 +570,14 @@ const _ = grpc.SupportPackageIsVersion4
 type TasksClient interface {
 	// GetTask implements get_task.
 	GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error)
+	// GetTasks implements get_tasks.
+	GetTasks(ctx context.Context, in *GetTasksRequest, opts ...grpc.CallOption) (*GetTasksResponse, error)
+	// AddTask implements add_task.
+	AddTask(ctx context.Context, in *AddTaskRequest, opts ...grpc.CallOption) (*AddTaskResponse, error)
+	// UpdateTask implements update_task.
+	UpdateTask(ctx context.Context, in *UpdateTaskRequest, opts ...grpc.CallOption) (*UpdateTaskResponse, error)
+	// DeleteTask implements delete_task.
+	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error)
 }
 
 type tasksClient struct {
@@ -167,10 +597,54 @@ func (c *tasksClient) GetTask(ctx context.Context, in *GetTaskRequest, opts ...g
 	return out, nil
 }
 
+func (c *tasksClient) GetTasks(ctx context.Context, in *GetTasksRequest, opts ...grpc.CallOption) (*GetTasksResponse, error) {
+	out := new(GetTasksResponse)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/GetTasks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tasksClient) AddTask(ctx context.Context, in *AddTaskRequest, opts ...grpc.CallOption) (*AddTaskResponse, error) {
+	out := new(AddTaskResponse)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/AddTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tasksClient) UpdateTask(ctx context.Context, in *UpdateTaskRequest, opts ...grpc.CallOption) (*UpdateTaskResponse, error) {
+	out := new(UpdateTaskResponse)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/UpdateTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tasksClient) DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error) {
+	out := new(DeleteTaskResponse)
+	err := c.cc.Invoke(ctx, "/tasks.Tasks/DeleteTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TasksServer is the server API for Tasks service.
 type TasksServer interface {
 	// GetTask implements get_task.
 	GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error)
+	// GetTasks implements get_tasks.
+	GetTasks(context.Context, *GetTasksRequest) (*GetTasksResponse, error)
+	// AddTask implements add_task.
+	AddTask(context.Context, *AddTaskRequest) (*AddTaskResponse, error)
+	// UpdateTask implements update_task.
+	UpdateTask(context.Context, *UpdateTaskRequest) (*UpdateTaskResponse, error)
+	// DeleteTask implements delete_task.
+	DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error)
 }
 
 // UnimplementedTasksServer can be embedded to have forward compatible implementations.
@@ -179,6 +653,18 @@ type UnimplementedTasksServer struct {
 
 func (*UnimplementedTasksServer) GetTask(ctx context.Context, req *GetTaskRequest) (*GetTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTask not implemented")
+}
+func (*UnimplementedTasksServer) GetTasks(ctx context.Context, req *GetTasksRequest) (*GetTasksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTasks not implemented")
+}
+func (*UnimplementedTasksServer) AddTask(ctx context.Context, req *AddTaskRequest) (*AddTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddTask not implemented")
+}
+func (*UnimplementedTasksServer) UpdateTask(ctx context.Context, req *UpdateTaskRequest) (*UpdateTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTask not implemented")
+}
+func (*UnimplementedTasksServer) DeleteTask(ctx context.Context, req *DeleteTaskRequest) (*DeleteTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTask not implemented")
 }
 
 func RegisterTasksServer(s *grpc.Server, srv TasksServer) {
@@ -203,6 +689,78 @@ func _Tasks_GetTask_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tasks_GetTasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTasksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).GetTasks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tasks.Tasks/GetTasks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).GetTasks(ctx, req.(*GetTasksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tasks_AddTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).AddTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tasks.Tasks/AddTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).AddTask(ctx, req.(*AddTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tasks_UpdateTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).UpdateTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tasks.Tasks/UpdateTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).UpdateTask(ctx, req.(*UpdateTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tasks_DeleteTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).DeleteTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tasks.Tasks/DeleteTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).DeleteTask(ctx, req.(*DeleteTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Tasks_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "tasks.Tasks",
 	HandlerType: (*TasksServer)(nil),
@@ -210,6 +768,22 @@ var _Tasks_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTask",
 			Handler:    _Tasks_GetTask_Handler,
+		},
+		{
+			MethodName: "GetTasks",
+			Handler:    _Tasks_GetTasks_Handler,
+		},
+		{
+			MethodName: "AddTask",
+			Handler:    _Tasks_AddTask_Handler,
+		},
+		{
+			MethodName: "UpdateTask",
+			Handler:    _Tasks_UpdateTask_Handler,
+		},
+		{
+			MethodName: "DeleteTask",
+			Handler:    _Tasks_DeleteTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

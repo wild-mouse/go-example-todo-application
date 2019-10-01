@@ -15,3 +15,23 @@ import (
 func GetTaskTasksPath(id uint32) string {
 	return fmt.Sprintf("/tasks/%v", id)
 }
+
+// GetTasksTasksPath returns the URL path to the tasks service get_tasks HTTP endpoint.
+func GetTasksTasksPath() string {
+	return "/tasks"
+}
+
+// AddTaskTasksPath returns the URL path to the tasks service add_task HTTP endpoint.
+func AddTaskTasksPath() string {
+	return "/tasks"
+}
+
+// UpdateTaskTasksPath returns the URL path to the tasks service update_task HTTP endpoint.
+func UpdateTaskTasksPath(id uint32) string {
+	return fmt.Sprintf("/tasks/%v", id)
+}
+
+// DeleteTaskTasksPath returns the URL path to the tasks service delete_task HTTP endpoint.
+func DeleteTaskTasksPath(id string) string {
+	return fmt.Sprintf("/task/%v", id)
+}

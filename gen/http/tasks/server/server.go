@@ -18,8 +18,12 @@ import (
 
 // Server lists the tasks service endpoint HTTP handlers.
 type Server struct {
-	Mounts  []*MountPoint
-	GetTask http.Handler
+	Mounts     []*MountPoint
+	GetTask    http.Handler
+	GetTasks   http.Handler
+	AddTask    http.Handler
+	UpdateTask http.Handler
+	DeleteTask http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -50,9 +54,16 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetTask", "GET", "/tasks/{id}"},
-			{"./gen/http/openapi.json", "GET", "/openapi.json"},
+			{"GetTasks", "GET", "/tasks"},
+			{"AddTask", "POST", "/tasks"},
+			{"UpdateTask", "PUT", "/tasks/{id}"},
+			{"DeleteTask", "DELETE", "/task/{id}"},
 		},
-		GetTask: NewGetTaskHandler(e.GetTask, mux, dec, enc, eh),
+		GetTask:    NewGetTaskHandler(e.GetTask, mux, dec, enc, eh),
+		GetTasks:   NewGetTasksHandler(e.GetTasks, mux, dec, enc, eh),
+		AddTask:    NewAddTaskHandler(e.AddTask, mux, dec, enc, eh),
+		UpdateTask: NewUpdateTaskHandler(e.UpdateTask, mux, dec, enc, eh),
+		DeleteTask: NewDeleteTaskHandler(e.DeleteTask, mux, dec, enc, eh),
 	}
 }
 
@@ -62,14 +73,19 @@ func (s *Server) Service() string { return "tasks" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetTask = m(s.GetTask)
+	s.GetTasks = m(s.GetTasks)
+	s.AddTask = m(s.AddTask)
+	s.UpdateTask = m(s.UpdateTask)
+	s.DeleteTask = m(s.DeleteTask)
 }
 
 // Mount configures the mux to serve the tasks endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetTaskHandler(mux, h.GetTask)
-	MountGenHTTPOpenapiJSON(mux, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./gen/http/openapi.json")
-	}))
+	MountGetTasksHandler(mux, h.GetTasks)
+	MountAddTaskHandler(mux, h.AddTask)
+	MountUpdateTaskHandler(mux, h.UpdateTask)
+	MountDeleteTaskHandler(mux, h.DeleteTask)
 }
 
 // MountGetTaskHandler configures the mux to serve the "tasks" service
@@ -124,8 +140,203 @@ func NewGetTaskHandler(
 	})
 }
 
-// MountGenHTTPOpenapiJSON configures the mux to serve GET request made to
-// "/openapi.json".
-func MountGenHTTPOpenapiJSON(mux goahttp.Muxer, h http.Handler) {
-	mux.Handle("GET", "/openapi.json", h.ServeHTTP)
+// MountGetTasksHandler configures the mux to serve the "tasks" service
+// "get_tasks" endpoint.
+func MountGetTasksHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/tasks", f)
+}
+
+// NewGetTasksHandler creates a HTTP handler which loads the HTTP request and
+// calls the "tasks" service "get_tasks" endpoint.
+func NewGetTasksHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		encodeResponse = EncodeGetTasksResponse(enc)
+		encodeError    = goahttp.ErrorEncoder(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "get_tasks")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+		var err error
+
+		res, err := endpoint(ctx, nil)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountAddTaskHandler configures the mux to serve the "tasks" service
+// "add_task" endpoint.
+func MountAddTaskHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/tasks", f)
+}
+
+// NewAddTaskHandler creates a HTTP handler which loads the HTTP request and
+// calls the "tasks" service "add_task" endpoint.
+func NewAddTaskHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeAddTaskRequest(mux, dec)
+		encodeResponse = EncodeAddTaskResponse(enc)
+		encodeError    = goahttp.ErrorEncoder(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "add_task")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateTaskHandler configures the mux to serve the "tasks" service
+// "update_task" endpoint.
+func MountUpdateTaskHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PUT", "/tasks/{id}", f)
+}
+
+// NewUpdateTaskHandler creates a HTTP handler which loads the HTTP request and
+// calls the "tasks" service "update_task" endpoint.
+func NewUpdateTaskHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateTaskRequest(mux, dec)
+		encodeResponse = EncodeUpdateTaskResponse(enc)
+		encodeError    = goahttp.ErrorEncoder(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "update_task")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteTaskHandler configures the mux to serve the "tasks" service
+// "delete_task" endpoint.
+func MountDeleteTaskHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/task/{id}", f)
+}
+
+// NewDeleteTaskHandler creates a HTTP handler which loads the HTTP request and
+// calls the "tasks" service "delete_task" endpoint.
+func NewDeleteTaskHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteTaskRequest(mux, dec)
+		encodeResponse = EncodeDeleteTaskResponse(enc)
+		encodeError    = goahttp.ErrorEncoder(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "delete_task")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "tasks")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
 }
