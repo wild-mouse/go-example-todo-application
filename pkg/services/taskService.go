@@ -37,6 +37,10 @@ func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	decoder := json.NewDecoder(r.Body)
 	var newTask models.Task
 	err := decoder.Decode(&newTask)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	if newTask.Name == "" {
 		http.Error(w, "Task name shouldn't be empty.", http.StatusBadRequest)
 		return
@@ -48,7 +52,39 @@ func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
-func DeleteTask( w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func UpdateTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	decoder := json.NewDecoder(r.Body)
+	var updateTask models.Task
+	err := decoder.Decode(&updateTask)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if updateTask.Name == "" {
+		http.Error(w, "Task name shouldn't be empty.", http.StatusBadRequest)
+		return
+	}
+	id := r.URL.Path[len("/tasks/"):]
+	query := fmt.Sprintf("UPDATE tasks SET name = \"%s\" WHERE id = \"%s\"", updateTask.Name, id)
+	result, err := db.Exec(query)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
+		return
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
+		return
+	}
+	if count == 0 {
+		http.Error(w, "Tasks to be updated not found.", http.StatusNotFound)
+		return
+	}
+}
+
+func DeleteTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	id := r.URL.Path[len("/tasks/"):]
 	query := fmt.Sprintf("DELETE FROM tasks WHERE id=%s", id)
 	result, err := db.Exec(query)
