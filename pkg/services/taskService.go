@@ -9,7 +9,10 @@ import (
 )
 
 func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	row := db.QueryRow("SELECT * FROM tasks WHERE id=1")
+	id := r.URL.Path[len("/tasks/"):]
+	query := fmt.Sprintf("SELECT * FROM tasks WHERE id=%s", id)
+	fmt.Println(query)
+	row := db.QueryRow(query)
 	var task models.Task
 	err := row.Scan(&task.Id, &task.Name)
 	if err != nil {

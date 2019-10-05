@@ -14,6 +14,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	http.HandleFunc("/tasks", handlers.MakeHandler(handlers.TasksHandler, db))
+	http.HandleFunc("/tasks/", handlers.MakeHandler(handlers.TasksHandler, db))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

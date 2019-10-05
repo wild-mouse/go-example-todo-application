@@ -15,7 +15,11 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, *sql.DB), db *sql.D
 
 func TasksHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method == http.MethodGet {
-		services.GetTask(w, r, db)
+		if r.URL.Path == "/tasks/" {
+			fmt.Println("Getting All tasks")
+		} else {
+			services.GetTask(w, r, db)
+		}
 	}
 	if r.Method == http.MethodPost {
 		services.AddTask(w, r, db)
