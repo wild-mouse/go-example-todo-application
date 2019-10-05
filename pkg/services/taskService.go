@@ -8,6 +8,10 @@ import (
 	"net/http"
 )
 
+func GetTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	fmt.Println("Getting Tasks.")
+}
+
 func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	id := r.URL.Path[len("/tasks/"):]
 	query := fmt.Sprintf("SELECT * FROM tasks WHERE id=%s", id)
@@ -30,8 +34,15 @@ func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	fmt.Println("Handling POST Method")
-	_, err := db.Query("insert into tasks values (1, \"hogehoge\")")
+	decoder := json.NewDecoder(r.Body)
+	var newTask models.Task
+	err := decoder.Decode(&newTask)
+	if newTask.Name == "" {
+		http.Error(w, "Task name shouldn't be empty.", http.StatusBadRequest)
+		return
+	}
+	query := fmt.Sprintf("insert into tasks (name) values (\"%s\")", newTask.Name)
+	_, err = db.Query(query)
 	if err != nil {
 		fmt.Println(err)
 	}
