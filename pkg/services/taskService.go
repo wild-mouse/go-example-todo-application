@@ -17,11 +17,15 @@ func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	err := row.Scan(&task.Id, &task.Name)
 	if err != nil {
 		fmt.Println(err)
+		http.Error(w, "Task not found.", http.StatusNotFound)
+		return
 	}
 	bytes, _ := json.Marshal(task)
 	_, err = fmt.Fprint(w, string(bytes))
 	if err != nil {
 		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
