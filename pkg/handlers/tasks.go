@@ -28,7 +28,11 @@ func TasksHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		fmt.Println("Handling PUT Method")
 	}
 	if r.Method == http.MethodDelete {
-		services.DeleteTask(w, r, db)
+		if r.URL.Path == "/tasks/" {
+			http.NotFound(w, r)
+		} else {
+			services.DeleteTask(w, r, db)
+		}
 	}
 }
 
