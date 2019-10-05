@@ -48,3 +48,23 @@ func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+func DeleteTask( w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	id := r.URL.Path[len("/tasks/"):]
+	query := fmt.Sprintf("DELETE FROM tasks WHERE id=%s", id)
+	result, err := db.Exec(query)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
+		return
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
+		return
+	}
+	if count == 0 {
+		http.Error(w, "Tasks to be deleted not found.", http.StatusNotFound)
+		return
+	}
+}

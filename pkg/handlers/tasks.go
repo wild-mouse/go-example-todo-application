@@ -28,7 +28,7 @@ func TasksHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		fmt.Println("Handling PUT Method")
 	}
 	if r.Method == http.MethodDelete {
-		fmt.Println("Handling DELETE Method")
+		services.DeleteTask(w, r, db)
 	}
 }
 
