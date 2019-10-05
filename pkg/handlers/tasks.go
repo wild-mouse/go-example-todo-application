@@ -15,16 +15,32 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, *sql.DB), db *sql.D
 
 func TasksHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method == http.MethodGet {
-		services.GetTask(w, r, db)
+		if r.URL.Path == "/tasks/" {
+			fmt.Println("Getting All tasks")
+		} else {
+			services.GetTask(w, r, db)
+		}
 	}
 	if r.Method == http.MethodPost {
-		services.AddTask(w, r, db)
+		if r.URL.Path == "/tasks/" {
+			services.AddTask(w, r, db)
+		} else {
+			http.NotFound(w, r)
+		}
 	}
 	if r.Method == http.MethodPut {
-		fmt.Println("Handling PUT Method")
+		if r.URL.Path == "/tasks/" {
+			http.NotFound(w, r)
+		} else {
+			services.UpdateTask(w, r, db)
+		}
 	}
 	if r.Method == http.MethodDelete {
-		fmt.Println("Handling DELETE Method")
+		if r.URL.Path == "/tasks/" {
+			http.NotFound(w, r)
+		} else {
+			services.DeleteTask(w, r, db)
+		}
 	}
 }
 
