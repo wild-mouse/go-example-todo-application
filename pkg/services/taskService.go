@@ -5,11 +5,43 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/wild-mouse/go-example-todo-application/pkg/models"
+	"log"
 	"net/http"
 )
 
 func GetTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	fmt.Println("Getting Tasks.")
+	query := fmt.Sprintf("SELECT * FROM tasks")
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	tasks := make([]models.Task, 0)
+
+	for rows.Next() {
+		var task models.Task
+		if err := rows.Scan(&task.Id, &task.Name); err != nil {
+			log.Fatal(err)
+		}
+		tasks = append(tasks, task)
+	}
+	rerr := rows.Close()
+	if rerr != nil {
+		log.Fatal(rerr)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	bytes, _ := json.Marshal(tasks)
+	_, err = fmt.Fprint(w, string(bytes))
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
