@@ -105,7 +105,7 @@ func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
-// @Summery Update a task
+// @Summary Update a task
 // @Description update a task by ID
 // @Accept json
 // @Param id path int true "An ID to update"
@@ -144,6 +144,11 @@ func UpdateTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+// @Summary Delete a task
+// @Description delete task by ID
+// @Param id path int true "ID of task to be deleted"
+// @Success 200
+// @Router /tasks/{id} [delete]
 func DeleteTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	id := r.URL.Path[len("/tasks/"):]
 	query := fmt.Sprintf("DELETE FROM tasks WHERE id=%s", id)

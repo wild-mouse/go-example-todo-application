@@ -77,6 +77,7 @@
                 "consumes": [
                     "application/json"
                 ],
+                "summary": "Update a task",
                 "parameters": [
                     {
                         "type": "integer",
@@ -97,7 +98,23 @@
                     }
                 ],
                 "responses": {
-                    "201": {}
+                    "200": {}
+                }
+            },
+            "delete": {
+                "description": "delete task by ID",
+                "summary": "Delete a task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of task to be deleted",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {}
                 }
             }
         }

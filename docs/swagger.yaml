@@ -42,6 +42,17 @@ paths:
         "201": {}
       summary: Add task
   /tasks/{id}:
+    delete:
+      description: delete task by ID
+      parameters:
+      - description: ID of task to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200": {}
+      summary: Delete a task
     get:
       description: get task by ID
       operationId: get-task-by-int
@@ -75,5 +86,6 @@ paths:
           $ref: '#/definitions/models.Task'
           type: object
       responses:
-        "201": {}
+        "200": {}
+      summary: Update a task
 swagger: "2.0"
