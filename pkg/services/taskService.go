@@ -9,6 +9,13 @@ import (
 	"net/http"
 )
 
+// GetTasks godoc
+// @Summary Show a tasks
+// @Description get all tasks
+// @ID get-string-by-int
+// @Produce  json
+// @Success 200 {string} string
+// @Router /tasks/ [get]
 func GetTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	query := fmt.Sprintf("SELECT * FROM tasks")
 	rows, err := db.Query(query)

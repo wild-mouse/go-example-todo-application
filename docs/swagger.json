@@ -7,5 +7,25 @@
         "license": {},
         "version": "1.0"
     },
-    "paths": {}
+    "host": "localhost:8080",
+    "paths": {
+        "/tasks/": {
+            "get": {
+                "description": "get all tasks",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Show a tasks",
+                "operationId": "get-string-by-int",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

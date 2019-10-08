@@ -1,8 +1,21 @@
+host: localhost:8080
 info:
   contact: {}
   description: This is a sample server Petstore server.
   license: {}
   title: Swagger Example API
   version: "1.0"
-paths: {}
+paths:
+  /tasks/:
+    get:
+      description: get all tasks
+      operationId: get-string-by-int
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Show a tasks
 swagger: "2.0"
