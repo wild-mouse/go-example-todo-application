@@ -51,6 +51,13 @@ func GetTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+// GetTask godoc
+// @Summary Get a task
+// @Description get task by ID
+// @ID get-task-by-int
+// @Param id path int true "Task ID"
+// @Success 200 {object} models.Task
+// @Router /tasks/{id} [get]
 func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	id := r.URL.Path[len("/tasks/"):]
 	query := fmt.Sprintf("SELECT * FROM tasks WHERE id=%s", id)
