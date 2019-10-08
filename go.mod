@@ -9,6 +9,8 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0
+	github.com/opentracing/opentracing-go v1.1.0
+	github.com/prometheus/client_golang v1.1.0
 	github.com/swaggo/http-swagger v0.0.0-20190614090009-c2865af9083e
 	github.com/swaggo/swag v1.6.3
 	goa.design/goa/v3 v3.0.6

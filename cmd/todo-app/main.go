@@ -7,6 +7,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/wild-mouse/go-example-todo-application/docs"
 	"github.com/wild-mouse/go-example-todo-application/pkg/handlers"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 )
@@ -22,6 +23,7 @@ func main() {
 		fmt.Println(err)
 	}
 	http.HandleFunc("/tasks/", handlers.MakeHandler(handlers.TasksHandler, db))
+	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/swagger/", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
 	))
