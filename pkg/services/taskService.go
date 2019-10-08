@@ -79,6 +79,13 @@ func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+// AddTask godoc
+// @Summary Add task
+// @Description add task
+// @Accept json
+// @Param task body models.Task false "A task to add"
+// @Success 201
+// @Router /tasks/ [post]
 func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	decoder := json.NewDecoder(r.Body)
 	var newTask models.Task
