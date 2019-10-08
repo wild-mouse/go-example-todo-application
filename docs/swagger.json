@@ -34,9 +34,10 @@
                 "summary": "Add task",
                 "parameters": [
                     {
-                        "description": "Task to add",
+                        "description": "A task to add",
                         "name": "task",
                         "in": "body",
+                        "required": true,
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/models.Task"
@@ -69,6 +70,34 @@
                             "$ref": "#/definitions/models.Task"
                         }
                     }
+                }
+            },
+            "put": {
+                "description": "update a task by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "An ID to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "A task to update",
+                        "name": "task",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {}
                 }
             }
         }

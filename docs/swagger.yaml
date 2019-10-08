@@ -31,9 +31,10 @@ paths:
       - application/json
       description: add task
       parameters:
-      - description: Task to add
+      - description: A task to add
         in: body
         name: task
+        required: true
         schema:
           $ref: '#/definitions/models.Task'
           type: object
@@ -56,4 +57,23 @@ paths:
           schema:
             $ref: '#/definitions/models.Task'
       summary: Get a task
+    put:
+      consumes:
+      - application/json
+      description: update a task by ID
+      parameters:
+      - description: An ID to update
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: A task to update
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+          type: object
+      responses:
+        "201": {}
 swagger: "2.0"

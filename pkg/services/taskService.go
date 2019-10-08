@@ -83,7 +83,7 @@ func GetTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 // @Summary Add task
 // @Description add task
 // @Accept json
-// @Param task body models.Task false "A task to add"
+// @Param task body models.Task true "A task to add"
 // @Success 201
 // @Router /tasks/ [post]
 func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -105,6 +105,13 @@ func AddTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+// @Summery Update a task
+// @Description update a task by ID
+// @Accept json
+// @Param id path int true "An ID to update"
+// @Param task body models.Task true "A task to update"
+// @Success 200
+// @Router /tasks/{id} [put]
 func UpdateTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	decoder := json.NewDecoder(r.Body)
 	var updateTask models.Task
